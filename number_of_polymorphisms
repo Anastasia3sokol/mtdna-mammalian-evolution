@@ -1,0 +1,15 @@
+list_of_polymorphisms = []
+for i in range(1,len(arr)):
+    num_of_polymorphisms = 0
+    for a in range(len(arr[0][1])):
+        if arr[0][1][a] != arr[i][1][a]:
+            print("%s %s %s %s" % (arr[i][0],arr[0][1][a],arr[i][1][a],a))
+            num_of_polymorphisms +=1
+    list_of_polymorphisms.append(c)        
+    print(num_of_polymorphisms)
+    print(len(arr[i][1]))
+    
+def Average(list_of_polymorphisms): 
+    return sum(list_of_polymorphisms) / len(list_of_polymorphisms) 
+average = Average(list_of_polymorphisms) 
+print("Average number of polimorphisms =", round(average, 2)) 
