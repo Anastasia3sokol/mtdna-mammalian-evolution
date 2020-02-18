@@ -1,1 +1,7 @@
 
+###############################
+# PURPOSE		: Find differences
+# AUTHOR, DATE	: Dima, 18 Feb 2020
+# SCRIPT		: Head/2Scripts/Differences_Between_One_Trio.R
+# INPUT FILE(S)	: Body/1Row/Codons/ (ATP6_NT.fasta, ATP8_NT.fasta, COX1_NT.fasta, COX2_NT.fasta, COX3_NT.fasta, CytB_NT.fasta, ND1_NT.fasta, ND2_NT.fasta, ND3_NT.fasta, ND4_NT.fasta, ND4L_NT.fasta, ND5_NT.fasta, ND6_NT.fasta)
+# OUTPUT FILE(S): Body/2Derived/DifferenceBetweenSpeciesOneTrio.txt
