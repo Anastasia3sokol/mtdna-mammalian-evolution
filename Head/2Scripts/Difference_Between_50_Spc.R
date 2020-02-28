@@ -4,7 +4,7 @@ library(seqinr)
 rm(list=ls(all=TRUE))
 
 wd <- getwd()
-wd <- paste(wd, '/Mammalian mtDNA Evolution/Body/1Raw/', sep='')
+wd <- paste(wd, '/Mammalian mtDNA Evolution/Body/1Raw', sep='')
 setwd(wd)
 
 
