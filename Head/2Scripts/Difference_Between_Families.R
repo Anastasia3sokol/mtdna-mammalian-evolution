@@ -2,7 +2,7 @@ library(Biostrings)
 library(seqinr)
 
 rm(list=ls(all=TRUE))
-
+#wd = gsub('/fasta_codons','',wd)
 
 wd = getwd()
 wd = paste(wd, '/mtdna-mammalian-evolution/Body/1Raw',sep='')
@@ -32,7 +32,7 @@ for (i in VecOfFamilies) {
 
 VecOfFamilies = unique(GenFam$ECO.Family)### new vector for families with species >= 3
 VecOfFamilies = as.character(VecOfFamilies)
-
+GenFam = GenFam[-which(duplicated(GenFam$Scientific_name)),] ### delete repeated species
 
 wd = paste(wd, '/fasta_codons', sep='')
 setwd(wd) ### Change direcotry for Codons
@@ -141,7 +141,9 @@ for (f in files){
           }
           
           DifferenceInOneGene$AllCodonSubstBetweenSp2AndSp3 = DifBtwSp2AndSp3
+          
           numofloop = numofloop + 1
+          
           if (numofloop == 1){
             DifferenceBetweenSpecies = DifferenceInOneGene
           } else {
