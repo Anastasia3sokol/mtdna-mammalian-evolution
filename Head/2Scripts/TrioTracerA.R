@@ -102,14 +102,14 @@ DistancesForAllUniqueSubstTogether = apply(as.matrix(AllUniqueSubstTogether),1,C
 ResDataFrame = data.frame(AllUniqueSubstTogether,DistancesForAllUniqueSubstTogether)
 
 # 1 
-names(ResDataFrame) = c('AllUniqueSubstTogether','DistancesAllCodonSubstBetweenSp1AndSp2')
-Trios = merge(Trios,ResDataFrame, by.x = 'AllCodonSubstBetweenSp1AndSp2', by.y = 'AllUniqueSubstTogether')
+names(ResDataFrame) = c('AllCodonSubstBetweenSp1AndSp2','DistancesAllCodonSubstBetweenSp1AndSp2')
+Trios = merge(Trios,ResDataFrame)
 
-names(ResDataFrame) = c('AllUniqueSubstTogether','DistancesAllCodonSubstBetweenSp1AndSp3')
-Trios = merge(Trios,ResDataFrame, by.x = 'AllCodonSubstBetweenSp1AndSp3', by.y = 'AllUniqueSubstTogether')
+names(ResDataFrame) = c('AllCodonSubstBetweenSp1AndSp3','DistancesAllCodonSubstBetweenSp1AndSp3')
+Trios = merge(Trios,ResDataFrame)
 
-names(ResDataFrame) = c('AllUniqueSubstTogether','DistancesAllCodonSubstBetweenSp2AndSp3')
-Trios = merge(Trios,ResDataFrame, by.x = 'AllCodonSubstBetweenSp2AndSp3', by.y = 'AllUniqueSubstTogether')
+names(ResDataFrame) = c('AllCodonSubstBetweenSp2AndSp3','DistancesAllCodonSubstBetweenSp2AndSp3')
+Trios = merge(Trios,ResDataFrame)
 
 #Trios$DistanceSp1AndSp2 = apply(as.matrix(Trios$AllCodonSubstBetweenSp1AndSp2),1,ComparisonOfTwoSpecies)
 #Trios$DistanceSp1AndSp3 = apply(as.matrix(Trios$AllCodonSubstBetweenSp1AndSp3),1,ComparisonOfTwoSpecies)
