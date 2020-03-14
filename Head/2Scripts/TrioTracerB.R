@@ -4,7 +4,7 @@ Trios = read.table("../../Body/2Derived/TrioTracerA.PairWiseAnnotation.txt")
 
 # NumbOfSubst,Synon,NonsAll,Nons1,Nons2,Nons3,Indel,Grantham1,Grantham2,Grantham3
 
-Trios$KnKsSp1Sp2 = unlist(strsplit(as.character(Trios$DistancesAllCodonSubstBetweenSp1AndSp2),','))[2]
+#Trios$KnKsSp1Sp2 = unlist(strsplit(as.character(Trios$DistancesAllCodonSubstBetweenSp1AndSp2),','))[2]
 
 Divergence <- function(x) {
   # x = as.character(Trios$DistancesAllCodonSubstBetweenSp1AndSp2)
@@ -35,23 +35,15 @@ Trios$DivergenceSp2Sp3 = apply(as.matrix(Trios$DistancesAllCodonSubstBetweenSp2A
 Trios$KnKsSp2Sp3 = apply(as.matrix(Trios$DistancesAllCodonSubstBetweenSp2AndSp3),1,KnKs)
 Trios$AverageGranthamSp2Sp3 = apply(as.matrix(Trios$DistancesAllCodonSubstBetweenSp2AndSp3),1,AverageGrantham)
 
-# control tests
-DIvergenceVec = c(Trios$DivergenceSp1Sp2,Trios$DivergenceSp1Sp3,Trios$DivergenceSp2Sp3)
-KnKsVec = c(Trios$KnKsSp1Sp2,Trios$KnKsSp1Sp3,Trios$KnKsSp2Sp3)
-AverageGranthamVec = c(Trios$AverageGranthamSp1Sp2,Trios$AverageGranthamSp1Sp3,Trios$AverageGranthamSp2Sp3)
+### outgroup is 1: 2 and 3 are ingroup species. 
+### If 2 is more long-lived than 3 (Trios$GenLengthSp2Sp3 > 0)
+### we expect that Trios$KnKsSp1Sp2 > Trios$KnKsSp1Sp3 
 
-cor.test(KnKsVec,DIvergenceVec, method = 'spearman') # negative
-cor.test(KnKsVec,AverageGranthamVec, method = 'spearman') # negative
-
-cor.test(Trios$KnKsSp1Sp2,Trios$DivergenceSp1Sp2, method = 'spearman') # negative
-cor.test(Trios$KnKsSp1Sp3,Trios$AverageGranthamSp1Sp3, method = 'spearman') # negative
-cor.test(Trios$KnKsSp2Sp3,Trios$AverageGranthamSp2Sp3, method = 'spearman') # negative
-
-cor.test(Trios$KnKsSp1Sp2,Trios$AverageGranthamSp1Sp2, method = 'spearman') # negative
-
-plot(Trios$KnKsSp1Sp2,Trios$AverageGranthamSp1Sp2)
-plot(Trios$KnKsSp1Sp3,Trios$AverageGranthamSp1Sp3)
-plot(Trios$KnKsSp2Sp3,Trios$AverageGranthamSp2Sp3)
+cor.test(Trios$GenLenSp2/Trios$GenLenSp3,Trios$KnKsSp1Sp2/Trios$KnKsSp1Sp3, method = 'spearman')
+plot(Trios$GenLenSp2/Trios$GenLenSp3,Trios$KnKsSp1Sp2/Trios$KnKsSp1Sp3)
 
 
-# find outgroup as the most distant species in the trio:
+
+
+
+
