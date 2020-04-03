@@ -22,7 +22,21 @@ rm(list=ls(all=TRUE))
   GranthamDistance$A = a(GranthamDistance$Aaa)
   str(GranthamDistance)
   
-  Trios = read.table("../../Body/2Derived/DifferenceBetweenSpeciesFamilies1CytB.txt", header = TRUE)
+
+  wd = getwd()
+  wd = paste(wd,'/mtdna-mammalian-evolution/Body/2Derived/DifferenceFamiliesCytB',sep='')
+  setwd(wd)
+  files = list.files(pattern=".*\\.txt")
+  for ( i in files ){
+    file1 = read.table(i)
+    if( i == 'DifferenceBetweenBalaenopteridae.txt' ) {
+      Trios = file1
+    } else {
+      Trios = rbind(Trios,file1)
+    }
+  }
+  
+  #Trios = read.table("../../Body/2Derived/DifferenceBetweenSpeciesFamilies1CytB.txt", header = TRUE)
   
   AllUniqueSubstTogether = c(as.character(Trios$AllCodonSubstBetweenSp1AndSp2),as.character(Trios$AllCodonSubstBetweenSp1AndSp3),as.character(Trios$AllCodonSubstBetweenSp2AndSp3))
   length(AllUniqueSubstTogether) # 131481 / 3 = 43827
@@ -119,4 +133,8 @@ Trios$AllCodonSubstBetweenSp1AndSp2<-NULL
 Trios$AllCodonSubstBetweenSp1AndSp3<-NULL
 Trios$AllCodonSubstBetweenSp2AndSp3<-NULL
 
-write.table(Trios,"../../Body/2Derived/TrioTracerA.PairWiseAnnotation.txt")
+
+  wd = gsub('/DifferenceFamiliesCytB', '',wd)
+  setwd(wd)
+  
+  write.table(Trios, file = 'TrioTracerA.PairWiseAnnotation.txt')
