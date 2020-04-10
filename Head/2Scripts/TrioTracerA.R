@@ -136,5 +136,4 @@ Trios$AllCodonSubstBetweenSp2AndSp3<-NULL
 
   wd = gsub('/DifferenceFamiliesCytB', '',wd)
   setwd(wd)
-  
   write.table(Trios, file = 'TrioTracerA.PairWiseAnnotation.txt')

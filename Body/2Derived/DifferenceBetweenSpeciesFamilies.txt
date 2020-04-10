@@ -1,1 +1,0 @@
-"Species1" "Species2" "Species3" "Family" "GenLenSp1" "GenLenSp2" "GenLenSp3" "AllCodonSubstBetweenSp1AndSp2" "AllCodonSubstBetweenSp1AndSp3" "AllCodonSubstBetweenSp2AndSp3" "Gene"
