@@ -1,17 +1,23 @@
 rm(list=ls(all=TRUE))
 
-List = list.files("../../Body/1Raw/PolymorphismsFromMutSpec/CYTB terminals/", pattern=".*\\.terminals.nuc.fa")
+# List = list.files("../../Body/1Raw/PolymorphismsFromMutSpec/CYTB terminals/", pattern=".*\\.terminals.nuc.fa")
+List = list.files("../../Body/1Raw/MutSpecTerminalsNucFa/", pattern=".*\\.terminals.nuc.fa")
 
-path="../../Body/1Raw/PolymorphismsFromMutSpec/CYTB terminals/"
+path="../../Body/1Raw/MutSpecTerminalsNucFa/"
 
 Final=data.frame('Gene','Species','FirstName','SecondName','SubstVec'); names(Final)=c('Gene','Species','FirstName','SecondName','SubstVec')
 Final=Final[-1,]
 
-for (file in List)
-  {# file = "Mus_musculus_castaneus.ATP6.terminals.nuc.fa"
+for (file in List) # length(List)
+{# file = "Mastomys_sp..COX1.terminals.nuc.fa"
   Sp <- read.table(paste(path,file,sep=''), header = FALSE)
   Species=unlist(strsplit(file,'\\.'))[1]
   Gene=unlist(strsplit(file,'\\.'))[2]
+  
+  # if Species == 'XXXXX_sp.' => in this case Gene = ''; for example in Mastomys_sp..COX1.terminals.nuc.fa
+  # to solve it we can do the next:
+  if (Gene == '') {Gene=unlist(strsplit(file,'\\.'))[3]}
+
   Odd = seq(2,nrow(Sp),2)
   NonOdd = seq(1,nrow(Sp),2)
   SpSeq=data.frame(Sp[Odd,])
@@ -53,5 +59,4 @@ for (file in List)
  
 length(unique(Final$Species)) # 
          
-write.table(Final,"../../Body/2Derived/PolymorphicPairwiseCodons.txt")          
-  
+write.table(Final,"../../Body/2Derived/PolymorphicPairwiseCodons.txt")
