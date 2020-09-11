@@ -1,6 +1,7 @@
 rm(list=ls(all=TRUE))
 
-Grantham = read.table("/home/anastasia/mtdna-mammalian-evolution/Body/2Derived/Grantham_1.csv", sep='\t', header = TRUE) 
+Grantham = read.table("/home/anastasia/mtdna-mammalian-evolution/Body/2Derived/Grantham.csv", sep='\t', header = TRUE) 
+#Grantham = Grantham1[1:10,]
 
     string.counter<-function(strings, pattern){  
   counts<-NULL
@@ -20,12 +21,12 @@ Grantham = read.table("/home/anastasia/mtdna-mammalian-evolution/Body/2Derived/G
       for (j in 1:length(vec)){
      if (string.counter(vec[j], pattern=">")) {Output = c(Output, vec[j])
     }   }
-  Grantham[i, "only_distances"] <- paste(Output, collapse=";")
+  Grantham[i, "only_distances_temp"] <- paste(Output, collapse=";")
   } }
 #################################### 
 
     for(i in 1:nrow(Grantham)){
-      vec = unlist(strsplit(Grantham$only_distances[i],';'))
+      vec = unlist(strsplit(Grantham$only_distances_temp[i],';'))
         if (length(vec)==0){N=N+1;next
       }else{
           Distances <- c()
@@ -34,7 +35,7 @@ Grantham = read.table("/home/anastasia/mtdna-mammalian-evolution/Body/2Derived/G
     Distance = gsub("(.*)\\:",'',AA_with_distance)# оставляет все после знака :
     Distances = c(Distances, Distance)
  }
-    Grantham[i, "distances"] <- paste(Distances, collapse=";") 
+    Grantham[i, "distances_temp"] <- paste(Distances, collapse=";") 
     }    }
 ################################################
     for(i in 1:nrow(Grantham)){
@@ -55,71 +56,94 @@ Grantham = read.table("/home/anastasia/mtdna-mammalian-evolution/Body/2Derived/G
       Grantham$All_Synon[i] <-as.numeric(Grantham$TotalDiv[i]) - as.numeric(Grantham$All_Non_Synon[i])
     }
     for(i in 1:nrow(Grantham)){
-           if (string.counter(Grantham$All_Synon[i], pattern=0)) {next} else
-      {Grantham$KnKs[i] = as.numeric(Grantham$All_Non_Synon[i]) / as.numeric(Grantham$All_Synon[i])
-      } 
+           #if (string.counter(Grantham$All_Synon[i], pattern=0)) {next} else
+     # {
+        Grantham$KnKs[i] = as.numeric(Grantham$All_Non_Synon[i]) / as.numeric(Grantham$All_Synon[i])
+      #} 
     }
    
  for (i in 1:nrow(Grantham)){
    Grantham$KnKs[i][is.infinite(Grantham$KnKs[i])] = NA
-      }
+ }
+   
+for(i in 1:nrow(Grantham)){
+  Grantham$FractionOfSyn[i] =  as.numeric(Grantham$All_Synon[i])/ as.numeric(Grantham$TotalDiv)
+  Grantham$FractionOfNonsyn[i] =  as.numeric(Grantham$All_Non_Synon[i])/ as.numeric(Grantham$TotalDiv)
+    }
 ###################################################
-        for(i in 1:nrow(Grantham)){
-      vec = unlist(strsplit(Grantham$distances[i],';'))
+          for(i in 1:nrow(Grantham)){
+      vec = unlist(strsplit(Grantham$distances_temp[i],';'))
       if (length(vec)==0){N=N+1;next
       }else{
         
-      Distances_mean <- 0
+        SummOfAllGrantham <- 0
       for (j in 1:length(vec)){
         num = as.numeric(vec[j])
-        Distances_mean = (Distances_mean + num)
+        NS = Grantham$All_Non_Synon[j]
+        SummOfAllGrantham = (SummOfAllGrantham + num)
         
       }
-      Grantham[i, "distances_mean"] <- paste((as.numeric(Distances_mean/length(vec))), collapse=";") 
+      Grantham[i, "SummOfAllGrantham"] <- paste((as.numeric(SummOfAllGrantham)), collapse=";") 
+      Grantham[i,"AverageGrantham"]<- paste(as.numeric(SummOfAllGrantham)/as.numeric(Grantham$All_Non_Synon[i]))
     }
     }
-
-#Grantham_1= Grantham[, -8:-9]
 
 KnKs <-aggregate(as.numeric(Grantham$KnKs),list(Grantham$Species),mean,na.rm=TRUE)
 colnames(KnKs) <- c("Species","KnKs")
 
-Distance_for_each_species <- aggregate(as.numeric(Grantham$distances_mean),list(Grantham$Species),mean,na.rm=TRUE)
-colnames(Distance_for_each_species) <- c("Species","Distance")
+SummOfAllGrantham <- aggregate(as.numeric(Grantham$SummOfAllGrantham),list(Grantham$Species),mean,na.rm=TRUE)
+colnames(SummOfAllGrantham) <- c("Species","SummOfAllGrantham")
+
+AverageGrantham <- aggregate(as.numeric(Grantham$AverageGrantham),list(Grantham$Species),mean,na.rm=TRUE)
+colnames(AverageGrantham) <- c("Species","AverageGrantham")
+
 #Distance_for_each_species$Species = sub("_", " ", data$Species, ignore.case = FALSE, perl = FALSE, fixed = FALSE, useBytes = FALSE)
 
-df <- merge(Distance_for_each_species,
+df <- merge(AverageGrantham,
+            SummOfAllGrantham,by.x = "Species", by.y = "Species",all = FALSE,no.dups = TRUE,)
+
+df1 <- merge(df,
             KnKs,by.x = "Species", by.y = "Species",all = FALSE,no.dups = TRUE,)
 
 
-S <- (aggregate((as.numeric(Grantham$All_Synon)),list(Grantham$Species),mean,na.rm = TRUE))
-colnames(S) <- c("Species","Synon")
-N <- (aggregate((as.numeric(Grantham$All_Non_Synon)),list(Grantham$Species),mean,na.rm = TRUE))
-colnames(N) <- c("Species","Non_Synon")
 
-df1 <- merge(S,N,by.x = "Species", by.y = "Species",all = FALSE,no.dups = TRUE,)
-data <-merge(df,df1,by.x = "Species", by.y = "Species",all = FALSE,no.dups = TRUE,)
 
-for(i in 1:nrow(data)){
- data$proportion_of_S[i] = (data$Synon[i])/(as.numeric(data$Synon[i]) + as.numeric(data$Non_Synon[i]))
- data$proportion_of_NS[i] = (data$Non_Synon[i])/(as.numeric(data$Synon[i]) + as.numeric(data$Non_Synon[i]))
-}
-write.table(data,file = "/home/anastasia/mtdna-mammalian-evolution/Body/2Derived/Distances&KnKs.csv",quote = F, row.names = FALSE,sep = '\t')
+
+MeanOfAllSyn <- (aggregate((as.numeric(Grantham$All_Synon)),list(Grantham$Species),mean,na.rm = TRUE))
+colnames(MeanOfAllSyn) <- c("Species","MeanOfAllSyn")
+MeanOfAllNonsyn <- (aggregate((as.numeric(Grantham$All_Non_Synon)),list(Grantham$Species),mean,na.rm = TRUE))
+colnames(MeanOfAllNonsyn) <- c("Species","MeanOfAllNonsyn")
+
+df2 <- merge(MeanOfAllSyn,MeanOfAllNonsyn,by.x = "Species", by.y = "Species",all = FALSE,no.dups = TRUE,)
+Data1 <-merge(df1,df2,by.x = "Species", by.y = "Species",all = FALSE,no.dups = TRUE,)
+
+FractionOfSyn <-aggregate(as.numeric(Grantham$FractionOfSyn),list(Grantham$Species),mean,na.rm=TRUE)
+colnames(FractionOfSyn) <- c("Species","FractionOfSyn")
+
+FractionOfNonsyn <-aggregate(as.numeric(Grantham$FractionOfNonsyn),list(Grantham$Species),mean,na.rm=TRUE)
+colnames(FractionOfNonsyn) <- c("Species","FractionOfNonsyn")
+
+Data2 <-merge(FractionOfSyn,FractionOfNonsyn,by.x = "Species", by.y = "Species",all = FALSE,no.dups = TRUE,)
+
+Data <-merge(Data1,Data2,by.x = "Species", by.y = "Species",all = FALSE,no.dups = TRUE,)
+
+write.table(Data,file = "/home/anastasia/mtdna-mammalian-evolution/Body/2Derived/Distances_KnKs.csv",quote = F, row.names = FALSE,sep = '\t')
+
 
 
 library(ape)
 library(gdata)
 library(ggplot2)
 
-data = read.table("/home/anastasia/mtdna-mammalian-evolution/Body/2Derived/Distances&KnKs.csv", sep='\t', header = TRUE) 
+data = read.table("/home/anastasia/mtdna-mammalian-evolution/Body/2Derived/Distances_KnKs.csv", sep='\t', header = TRUE) 
 GenLength <- read.xls("/home/anastasia/mtdna-mammalian-evolution/Body/1Raw/GenerationLengthForMammals.xlsx")# табличка с продолжительностью жизни от Алины
 
 data$Species = sub("_", " ", data$Species, ignore.case = FALSE, perl = FALSE, fixed = FALSE, useBytes = FALSE)
 
-NewData = merge(data,GenLength, by.x = "Species", by.y = "Scientific_name",all = FALSE,no.dups = TRUE,)
-Data <- NewData[,-13:-19]
-Data <- Data[,-14]
-Data <- Data[,-8]
+Data = merge(data,GenLength, by.x = "Species", by.y = "Scientific_name",all = FALSE,no.dups = TRUE,)
+#Data <- NewData[,-13:-19]
+#Data <- Data[,-14]
+#Data <- Data[,-8]
 
 #GenerationLength_Distances
 
@@ -184,4 +208,23 @@ ggplot(Data, aes(x = log(GenerationLength_d), y = proportion_of_NS, col = factor
 
 ggplot(Data, aes(x = log(GenerationLength_d), y = proportion_of_NS, fill = Order)) + 
   geom_boxplot()
+
+#GenerationLength and AverageGrantham
+
+cor.test(x = Data$GenerationLength_d, y = Data$AverageGrantham, method = "spearm", na.action = "na.exclude")
+GenerationLengthAverageGrantham_fit  <- cor.test(x = Data$GenerationLength_d, y = Data$AverageGrantham)
+
+plot(x = Data$GenerationLength_d, y = Data$AverageGrantham)
+
+ggplot(Data, aes(x = log(GenerationLength_d), y = AverageGrantham)) + 
+  geom_point() +
+  geom_smooth()
+
+ggplot(Data, aes(x = log(GenerationLength_d), y = AverageGrantham, col = factor(Order))) + 
+  geom_point()
+
+ggplot(Data, aes(x = log(GenerationLength_d), y = AverageGrantham, fill = Order)) + 
+  geom_boxplot()
+
+
 
