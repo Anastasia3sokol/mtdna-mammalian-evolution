@@ -19,8 +19,8 @@ Trios1 = merge(Trios1, GenerationL, by.x = 'Ingroup0', by.y = 'Scientific_name' 
 Trios1 = merge(Trios1, GenerationL, by.x = 'Ingroup1', by.y = 'Scientific_name' ) # in2
 
 names(Trios1)
-names(Trios1)[c(26,27,28)] =c('GenLenOut','GenLenIn1','GenLenIn2') 
-
+##### names(Trios1)[c(26,27,28)] =c('GenLenOut','GenLenIn1','GenLenIn2') #### HERE IS ERROR, NOT NORMAL INDEX FOR GENLEN 
+names(Trios1)[c(26,27,28)] =c('GenLenOut','GenLenIn2','GenLenIn1')
 #wd = gsub('1Raw','2Derived',wd)
 #setwd(wd)
 #write.table(Trios1, 'threesomes_nb2_RRT_wGL.txt')
