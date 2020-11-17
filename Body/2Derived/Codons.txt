@@ -1,0 +1,2 @@
+Gene	Species	FirstName	SecondName	TotalDiv	Distances	only_distances_temp	All_Non_Synon
+CytB	Abbottina_rivularis	RN_8	RN_11	11	
