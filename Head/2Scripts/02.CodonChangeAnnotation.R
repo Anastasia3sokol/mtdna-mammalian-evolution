@@ -1,5 +1,9 @@
   rm(list=ls(all=TRUE))
   
+  wd = getwd()
+  wd = paste(wd, '/mtdna-mammalian-evolution/Body/2Derived',sep='')
+  setwd(wd)
+  
   #### libraries
   # if (!requireNamespace("BiocManager", quietly = TRUE))
   # install.packages("BiocManager")
@@ -11,9 +15,7 @@
   library(RGenetics)
   SGC1 <- getGeneticCode("SGC1")  # Vertebrate Mitochondrial code for translate function
   
-  
-  #### read data:
-  Codons = read.table("/home/anastasia/mtdna-mammalian-evolution/Body/2Derived/PolymorphicPairwiseCodons.txt") 
+  Codons2 = read.table("../../Body/2Derived/PolymorphicPairwiseCodons.txt") #датасет, созданный в скрипте 01,содержит вектор замещений SubstVec
   #Codons <- Codons2[1:100,]
   
   ### functions which take example line as input and return different metrics: 
@@ -22,24 +24,21 @@
   # number of nonsyn substitutions, 
   # within nonsyn substitutions - average grantham distance between the first and the second AA
   
-  
+  #Функция, которая считает общее количество замещений
   TotalDiv <- function(x) {Div = length(unlist(strsplit(x,';')))}
-  Codons$TotalDiv <- apply(as.matrix(Codons$SubstVec),1,FUN = TotalDiv)
-  summary(Codons$TotalDiv)
+  Codons$TotalDiv <- apply(as.matrix(Codons$SubstVec),1,FUN = TotalDiv) #посчитанные замещения прикрепляются в колонку TotalDiv в датасет Codons
   
-  
-  
+  # А дальше считаем дистанции
   data(aaindex)
   names(aaindex) # 544 codes related to different amino-acid properties
   aaindex$GRAR740101 # composition from Grantham 
   aaindex$GRAR740102 # polarity from Grantham 
   aaindex$GRAR740103 # volume from Grantham 
   
-  GranthamDistance = data.frame(cbind(aaindex$GRAR740101$I,aaindex$GRAR740102$I,aaindex$GRAR740103$I))
+  GranthamDistance = data.frame(cbind(aaindex$GRAR740101$I,aaindex$GRAR740102$I,aaindex$GRAR740103$I)) # создается таблица с данными по структуре, полярности и обьему каждой аминокислоты
   names(GranthamDistance)=c("Composition","Polarity","Volume")
-  GranthamDistance$Aaa = row.names(GranthamDistance)
-  GranthamDistance$A = a(GranthamDistance$Aaa)
-  str(GranthamDistance)
+  GranthamDistance$Aaa = row.names(GranthamDistance) # создается колонка с трехбуквенными названиями аминокислот
+  GranthamDistance$A = a(GranthamDistance$Aaa) # создается колонка с однобуквенными названиями аминокислот
   
   Synon <- 0
   Non_Synon <- 0
@@ -53,7 +52,7 @@
   one_line = c()
   
   #x = "3:TGC>AGC;7:ACA>ACC;8:CAT>CAC;9:CCC>CCT;14:GCT>GCG;17:GCG>ACG;26:AAC>AGC;369:GCA>ACC;374:AAC>AAT;377:TTA>ATA;380:GCC>GCT;"
-  #x = "30:GAA>GNA;200:AAT>AAC;321:CCC>CCT;"
+
   Translation <- function(x) 
   {
     
@@ -81,10 +80,8 @@
         
         Codon1.Character = as.character(Codon1)
         Codon2.Character = as.character(Codon2)
-        #if  (grepl('-',Codon1.Character) | grepl('-',Codon2.Character)) {Indel=Indel+1; break}
-        #if  (!grepl('-',Codon1.Character) & !grepl('-',Codon2.Character)) 
+      
         
-        #{ 
         A1 = as.character(Biostrings::translate(Codon1, genetic.code=SGC1))
         A2 = as.character(Biostrings::translate(Codon2, genetic.code=SGC1))
         
@@ -113,7 +110,7 @@
         AminoGrantham = paste(Subs, ':', GranthamNew,';','Synon:', Synon,';','Non_Synon:', Non_Synon, sep='')
         
         VecOfDistances = c(VecOfDistances, AminoGrantham)
-        #} 
+        
       }else{N=N+1;break}
     }
     return(VecOfDistances)
@@ -124,8 +121,8 @@ Codons$Distances = lapply(as.character(Codons$SubstVec), Translation)
 for(i in 1:nrow(Codons)){
   Codons[i, 'NewDistance'] = paste(unlist(Codons$Distance[i]), collapse = ',')
 }
-  
 newCodons = Codons[, -7]
-write.table(newCodons,file = "/home/anastasia/mtdna-mammalian-evolution/Body/2Derived/Granyham_with_W.csv",quote = F, row.names = FALSE,
-              sep = '\t')
 
+write.table(newCodons,file = "../../Body/2Derived/Granyham.csv",quote = F, row.names = FALSE,
+              sep = '\t')
+  

@@ -1,1 +1,15 @@
+﻿01.PolymorphismExtraction.R – тут из данных мутспека (папка MutSpecTerminalsNucFa) отбираются файлы с \\.terminals.nuc.fa. Создает вектор замещений, попарно сравнивая последовательности. 
+Создает файл PolymorphicPairwiseCodons.txt
+
+02.CodonChangeAnnotation.R – этот скрипт берет на вход вектор замещений (созданный в скрипте 1), считает общее кол-во замещений (TotalDiv). Из таблици aaindex берет информацию о свойствах аминокислот (Composition, Polarity, Volume) и после трансляции кодонов к каждой паре аминокислот рассчитывает дистанцию грантхэма по свойствам. Берет на вход файл PolymorphicPairwiseCodons.txt; создает файл Granyham.csv 
+
+2.1.CodonChangeAnnotation_RG.R – этот скрипт делает то же самое, что и скрипт 02, но на вход берет дистанции Грантхэма, опубликованные в статье.
+Берет на вход файлы PolymorphicPairwiseCodons.txt,Grantham – Sheet1.csv;создает файл Real_distances.csv
+
+03.CorrelationWithEcology.R – этот скрипт преобразует колонку NewDistance в несколько – дистанция, кол-во несинонимичных, кол-во синонимичных. Расчитывает среднюю и суммарные дистанции в среднем для вида (до этого были дистанции для каждого попарного сравнения), а еще считает KnKs и доли синонимичных и несинонимичных замещений от общего. Потом все слепляется в одну общую таблицу (Distances_KnKs_RG.csv).
+Эта таблица далее мерджится с данными по экологии (GenerationLengthForMammals.xlsx) и записывается общая таблица (Distances_KnKs_Ecology_RG.csv). А еще считаются всякие корреляции и строятся графики.
+Берет на вход файлы Real_distances.csv,Distances_KnKs_RG.csv,GenerationLengthForMammals.xlsx; создает файлы Distances_KnKs_RG.csv,Distances_KnKs_Ecology_RG.csv
+
+04.RedBook.R – этот скрипт берет на вход данные с дистанциями и экологией, соединет их с данными по красной книге и строит маленький график
+Берет на вход файлы IUCN.csv,Distances_KnKs_Ecology_RG.csv; создает файл Dist_with_IUCN.csv
 

@@ -1,7 +1,11 @@
 rm(list=ls(all=TRUE))
 
+wd = getwd()
+wd = paste(wd, '/mtdna-mammalian-evolution/Body/1Raw',sep='')
+setwd(wd)
+
 # List = list.files("../../Body/1Raw/PolymorphismsFromMutSpec/CYTB terminals/", pattern=".*\\.terminals.nuc.fa")
-List = list.files("../../Body/1Raw/MutSpecTerminalsNucFa/", pattern=".*\\.terminals.nuc.fa")
+List = list.files("../../Body/1Raw/MutSpecTerminalsNucFa/", pattern=".*\\.terminals.nuc.fa")# функция, которая выбирает из папки файлы, имеющие в названии ".terminals.nuc.fa"
 
 path="../../Body/1Raw/MutSpecTerminalsNucFa/"
 
@@ -59,4 +63,9 @@ for (file in List) # length(List)
  
 length(unique(Final$Species)) # 
          
-write.table(Final,"../../Body/2Derived/PolymorphicPairwiseCodons.txt")
+wd = gsub('/1Raw', '/2Derived', wd)
+setwd(wd)
+write.table(DifferenceBetweenSpecies, file = "DifferenceBetweenSpeciesFamilies.txt")
+
+write.table(Final,file = "PolymorphicPairwiseCodons.txt")
+#write.table(Final,"../../Body/2Derived/PolymorphicPairwiseCodons.txt")
