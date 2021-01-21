@@ -138,9 +138,9 @@
   
   Data = merge(Data,GenLength, by.x = "Species", by.y = "Scientific_name",all = FALSE,no.dups = TRUE,)
   
-  NewData <- Data[,-9:-20]
-  Data <- NewData[,-10]
-  
+  Data <- Data[,-11:-20]
+  Data <- Data[,-12]
+  Data <- Data[,-9]
   write.table(Data,file = "../../Body/2Derived/Distances_KnKs_Ecology_RG.csv",quote = F, row.names = FALSE,sep = '\t')
   
   
@@ -226,3 +226,39 @@
   
   ggplot(Data, aes(x = log(GenerationLength_d), y = KnKs, fill = Order)) + 
     geom_boxplot()
+####################
+  
+quantile(Data$GenerationLength_d, seq(from=0, to=1, by=0.25),na.rm = TRUE)  
+  
+boxplot(Data[Data$GenerationLength_d < 637.3329,]$AverageGrantham, +
+          Data[Data$GenerationLength_d < 1825.0000 & Data$GenerationLength_d > 637.3329,]$AverageGrantham, +
+          Data[Data$GenerationLength_d < 2869.6933 & Data$GenerationLength_d > 1825.0000,]$AverageGrantham, +
+          Data[Data$GenerationLength_d > 2869.6933,]$AverageGrantham, names = c('Q1','Q2', 'Q3','Q4'), outline = FALSE, xlab = "GenLenght", ylab = "AverageGrantham")
+
+boxplot(Data[Data$GenerationLength_d < 637.3329,]$KnKs, +
+          Data[Data$GenerationLength_d < 1825.0000 & Data$GenerationLength_d > 637.3329,]$KnKs, +
+          Data[Data$GenerationLength_d < 2869.6933 & Data$GenerationLength_d > 1825.0000,]$KnKs, +
+          Data[Data$GenerationLength_d > 2869.6933,]$KnKs, names = c('Q1','Q2', 'Q3','Q4'), outline = FALSE, xlab = "GenLenght", ylab = "KnKs")
+
+boxplot(Data[Data$Order == "Eulipotyphla",]$KnKs,+
+          Data[Data$Order == "Rodentia",]$KnKs, +
+          Data[Data$Order == "Chiroptera",]$KnKs, +
+          Data[Data$Order == "Carnivora",]$KnKs, +
+          Data[Data$Order == "Primates",]$KnKs, +
+          Data[Data$Order =="Cetartiodactyla",]$KnKs, names = c('Eulipotyphla',"Rodentia",'Chiroptera','Carnivora',"Primates",'Cetartiodactyla'), outline = FALSE, xlab = "GenLenght", ylab = "KnKs")
+
+boxplot(Data[Data$Order == "Eulipotyphla",]$AverageGrantham,+
+          Data[Data$Order == "Rodentia",]$AverageGrantham, +
+          Data[Data$Order == "Chiroptera",]$AverageGrantham, +
+          Data[Data$Order == "Carnivora",]$AverageGrantham, +
+          Data[Data$Order == "Primates",]$AverageGrantham, +
+          Data[Data$Order =="Cetartiodactyla",]$AverageGrantham, names = c('Eulipotyphla',"Rodentia",'Chiroptera','Carnivora',"Primates",'Cetartiodactyla'), outline = FALSE, xlab = "GenLenght", ylab = "AverageGrantham")
+
+boxplot(Data[Data$Order == "Carnivora",]$GenerationLength_d,+
+          Data[Data$Order == "Cetartiodactyla",]$GenerationLength_d, +
+          Data[Data$Order == "Chiroptera",]$GenerationLength_d, +
+          Data[Data$Order == "Eulipotyphla",]$GenerationLength_d, +
+          Data[Data$Order == "Primates",]$GenerationLength_d, +
+          Data[Data$Order =="Rodentia",]$GenerationLength_d, names = c('Eulipotyphla',"Rodentia",'Chiroptera','Carnivora',"Primates",'Cetartiodactyla'), outline = FALSE, xlab = "GenLenght", ylab = "G")
+
+# Carnivora Cetartiodactyla Chiroptera Eulipotyphla Primates Rodentia 
