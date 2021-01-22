@@ -127,6 +127,7 @@
   write.table(df5,file = "../../Body/2Derived/Distances_KnKs_RG.csv",quote = F, row.names = FALSE,sep = '\t')
   
   
+  
   library(ape)
   library(gdata)
   library(ggplot2)
@@ -178,13 +179,13 @@
     geom_boxplot()
   
   #(iv) SummOfAllNonsyn ~ +GenerLength 
-  cor.test(x = Data$GenerationLength_d, y = Data$MeanOfAllNonsyn , method = "spearm")
-  GenerationLength_MeanOfAllNonsyn_fit  <- cor.test(x = Data$GenerationLength_d, y = Data$MeanOfAllNonsyn)
+  cor.test(x = Data$GenerationLength_d, y = Data$MedianOfAllNonsyn , method = "spearm")
+  GenerationLength_MedianOfAllNonsyn_fit  <- cor.test(x = Data$GenerationLength_d, y = Data$MedianOfAllNonsyn)
   
-  ggplot(Data, aes(x = log(GenerationLength_d), y = MeanOfAllNonsyn ,col = factor(Order) ))+
+  ggplot(Data, aes(x = log(GenerationLength_d), y = MedianOfAllNonsyn ,col = factor(Order) ))+
     geom_point(size = 2)
   
-  ggplot(Data, aes(x = log(GenerationLength_d), y =MeanOfAllNonsyn , fill = Order)) + 
+  ggplot(Data, aes(x = log(GenerationLength_d), y =MedianOfAllNonsyn , fill = Order)) + 
     geom_boxplot()
   
   #(v) SummOfAllGrantham ~+SummOfAllNonsyn (проверка на вшивость)
@@ -207,7 +208,7 @@
   ggplot(Data, aes(x = log(GenerationLength_d), y = AverageGrantham, fill = Order)) + 
     geom_boxplot()
   
-  #(vii) AverageGranthamNS ~ +GenerLength; 
+  #(vii) AverageGrantham ~ +GenerLength; 
   cor.test(x = Data$GenerationLength_d, y = Data$AverageGrantham , method = "spearm")
   GenerationLength_AverageGrantham_fit  <- cor.test(x = Data$GenerationLength_d, y = Data$AverageGrantham)
   
@@ -229,7 +230,7 @@
 ####################
   
 quantile(Data$GenerationLength_d, seq(from=0, to=1, by=0.25),na.rm = TRUE)  
-  
+
 boxplot(Data[Data$GenerationLength_d < 637.3329,]$AverageGrantham, +
           Data[Data$GenerationLength_d < 1825.0000 & Data$GenerationLength_d > 637.3329,]$AverageGrantham, +
           Data[Data$GenerationLength_d < 2869.6933 & Data$GenerationLength_d > 1825.0000,]$AverageGrantham, +
@@ -247,12 +248,26 @@ boxplot(Data[Data$Order == "Eulipotyphla",]$KnKs,+
           Data[Data$Order == "Primates",]$KnKs, +
           Data[Data$Order =="Cetartiodactyla",]$KnKs, names = c('Eulipotyphla',"Rodentia",'Chiroptera','Carnivora',"Primates",'Cetartiodactyla'), outline = FALSE, xlab = "GenLenght", ylab = "KnKs")
 
+TempData = subset(Data, Data$Order == 'Eulipotyphla'|Data$Order =="Rodentia"|Data$Order =='Chiroptera'|Data$Order =='Carnivora'|Data$Order =="Primates"|Data$Order =='Cetartiodactyla')
+
+ggplot(TempData, aes(x=Order, y=KnKs,fill=Order)) + 
+     geom_violin(trim=FALSE)+ 
+  stat_summary(fun=median, geom="crossbar", size=1, color="red")+
+  labs(title="KnKs~GenLen",x="Order", y = "KnKs")+
+  theme_classic()
+
 boxplot(Data[Data$Order == "Eulipotyphla",]$AverageGrantham,+
           Data[Data$Order == "Rodentia",]$AverageGrantham, +
           Data[Data$Order == "Chiroptera",]$AverageGrantham, +
           Data[Data$Order == "Carnivora",]$AverageGrantham, +
           Data[Data$Order == "Primates",]$AverageGrantham, +
           Data[Data$Order =="Cetartiodactyla",]$AverageGrantham, names = c('Eulipotyphla',"Rodentia",'Chiroptera','Carnivora',"Primates",'Cetartiodactyla'), outline = FALSE, xlab = "GenLenght", ylab = "AverageGrantham")
+
+ggplot(TempData, aes(x=Order, y=AverageGrantham,fill=Order)) + 
+  geom_violin(trim=FALSE)+ 
+  stat_summary(fun=median, geom="crossbar", size=1, color="red")+
+  labs(title="AverageGrantham~GenLen",x="Order", y = "AverageGrantham")+
+  theme_classic()
 
 boxplot(Data[Data$Order == "Carnivora",]$GenerationLength_d,+
           Data[Data$Order == "Cetartiodactyla",]$GenerationLength_d, +
@@ -261,4 +276,14 @@ boxplot(Data[Data$Order == "Carnivora",]$GenerationLength_d,+
           Data[Data$Order == "Primates",]$GenerationLength_d, +
           Data[Data$Order =="Rodentia",]$GenerationLength_d, names = c('Eulipotyphla',"Rodentia",'Chiroptera','Carnivora',"Primates",'Cetartiodactyla'), outline = FALSE, xlab = "GenLenght", ylab = "G")
 
+median(Data[Data$Order == "Primates",]$GenerationLength_d)
+median(Data[Data$Order =="Cetartiodactyla",]$GenerationLength_d)# продолжительность жизни китопарнокопытных чуть больше, чем у приматов
 # Carnivora Cetartiodactyla Chiroptera Eulipotyphla Primates Rodentia 
+
+
+Data = read.table("../../Body/2Derived/Distances_KnKs_RG.csv", sep='\t', header = TRUE) 
+GenLength<- read.xls("../../Body/1Raw/GenerationLengthForMammals.xlsx")# табличка с продолжительностью жизни от Алины
+
+Data$Species = sub("_", " ", Data$Species, ignore.case = FALSE, perl = FALSE, fixed = FALSE, useBytes = FALSE)
+
+Data = merge(Data,GenLength, by.x = "Species", by.y = "Scientific_name",all = FALSE,no.dups = TRUE,)
