@@ -32,22 +32,40 @@ write.table(Dist_with_IUCN,file = "../../Body/2Derived/Dist_with_IUCN.csv",quote
 
 Data = subset(Dist_with_IUCN, Dist_with_IUCN[,11] != "DD") # обрезаем Data Deficient тк ничего про них не знаем, их всего лишь 10
 
-Data$category = sub("LC",'1',Data$category)
-Data$category = sub("NT",'2',Data$category)
-Data$category = sub("VU",'3',Data$category)
-Data$category = sub("EN",'4',Data$category)
-Data$category = sub("CR",'5',Data$category)
+Data$CategoryPoisson = Data$category
+Data$CategoryPoisson = sub("LC",0,Data$CategoryPoisson)
+Data$CategoryPoisson = sub("NT",1,Data$CategoryPoisson)
+Data$CategoryPoisson = sub("VU",2,Data$CategoryPoisson)
+Data$CategoryPoisson = sub("EN",3,Data$CategoryPoisson)
+Data$CategoryPoisson = sub("CR",4,Data$CategoryPoisson)
+Data$CategoryPoisson = as.numeric(Data$CategoryPoisson) # from character to numeric
+summary(Data$CategoryPoisson)
 
-model1 = glm(KnKs ~ log2(GenerationLength_d) + category, family = 'poisson', data = Data); 
-summary(model1)
+Data$CategoryBinomial = as.numeric(sub("2|3|4",1,Data$CategoryPoisson))
+table(Data$CategoryBinomial)
+
+#model1 = glm(KnKs ~ log2(GenerationLength_d) + category, family = 'poisson', data = Data); 
+#summary(model1)
+
+model1KP.KnKs_Poisson = glm(CategoryPoisson ~ log2(GenerationLength_d) + KnKs, family = 'poisson', data = Data); 
+summary(model1KP.KnKs_Poisson)
+
+model1KPKnKs_Binomial = glm(CategoryBinomial ~ log2(GenerationLength_d) + KnKs, family = 'binomial', data = Data); 
+summary(model1KPKnKs_Binomial)
 
 ggplot(Data,aes(GenerationLength_d, KnKs))+
   geom_point(size = 1)+
   geom_smooth(method = "lm")+
   facet_grid(.~category)
 
-model3 = glm(AverageGrantham ~ log2(GenerationLength_d) + category, family = 'poisson', data = Data); # model1 = glm(Data$KnKs ~ log(Data$GenerationLength_d) + IucnRanks, family = 'poisson', data = Data); 
-summary(model3)
+#model3 = glm(AverageGrantham ~ log2(GenerationLength_d) + category, family = 'poisson', data = Data); # model1 = glm(Data$KnKs ~ log(Data$GenerationLength_d) + IucnRanks, family = 'poisson', data = Data); 
+#summary(model3)
+
+model3KP.AverageGrantham_Poisson = glm(CategoryPoisson ~ log2(GenerationLength_d) + AverageGrantham, family = 'poisson', data = Data); # model1 = glm(Data$KnKs ~ log(Data$GenerationLength_d) + IucnRanks, family = 'poisson', data = Data); 
+summary(model3KP.AverageGrantham_Poisson)
+
+model3KP.AverageGrantham_Binomial = glm(CategoryBinomial ~ log2(GenerationLength_d) + AverageGrantham, family = 'binomial', data = Data); # model1 = glm(Data$KnKs ~ log(Data$GenerationLength_d) + IucnRanks, family = 'poisson', data = Data); 
+summary(model3KP.AverageGrantham_Binomial)
 
 ggplot(Data,aes(GenerationLength_d, AverageGrantham))+
   geom_point(size = 2)+
