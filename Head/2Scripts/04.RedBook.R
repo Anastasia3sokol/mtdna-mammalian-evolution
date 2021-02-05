@@ -40,17 +40,20 @@ Data$CategoryPoisson = sub("EN",3,Data$CategoryPoisson)
 Data$CategoryPoisson = sub("CR",4,Data$CategoryPoisson)
 Data$CategoryPoisson = as.numeric(Data$CategoryPoisson) # from character to numeric
 summary(Data$CategoryPoisson)
+table(Data$CategoryPoisson)
 
-Data$CategoryBinomial = as.numeric(sub("2|3|4",1,Data$CategoryPoisson))
+Data$CategoryBinomial = as.numeric(Data$CategoryPoisson)
+Data$CategoryBinomial = as.numeric(sub("1",0,Data$CategoryBinomial))
+Data$CategoryBinomial = as.numeric(sub("2|3|4",1,Data$CategoryBinomial))
 table(Data$CategoryBinomial)
 
 #model1 = glm(KnKs ~ log2(GenerationLength_d) + category, family = 'poisson', data = Data); 
 #summary(model1)
 
-model1KP.KnKs_Poisson = glm(CategoryPoisson ~ log2(GenerationLength_d) + KnKs, family = 'poisson', data = Data); 
+model1KP.KnKs_Poisson = glm(CategoryPoisson ~ scale(log2(GenerationLength_d)) + scale(KnKs), family = 'poisson', data = Data); 
 summary(model1KP.KnKs_Poisson)
 
-model1KPKnKs_Binomial = glm(CategoryBinomial ~ log2(GenerationLength_d) + KnKs, family = 'binomial', data = Data); 
+model1KPKnKs_Binomial = glm(CategoryBinomial ~ scale(log2(GenerationLength_d)) + scale(KnKs), family = 'binomial', data = Data); 
 summary(model1KPKnKs_Binomial)
 
 ggplot(Data,aes(GenerationLength_d, KnKs))+
@@ -61,16 +64,17 @@ ggplot(Data,aes(GenerationLength_d, KnKs))+
 #model3 = glm(AverageGrantham ~ log2(GenerationLength_d) + category, family = 'poisson', data = Data); # model1 = glm(Data$KnKs ~ log(Data$GenerationLength_d) + IucnRanks, family = 'poisson', data = Data); 
 #summary(model3)
 
-model3KP.AverageGrantham_Poisson = glm(CategoryPoisson ~ log2(GenerationLength_d) + AverageGrantham, family = 'poisson', data = Data); # model1 = glm(Data$KnKs ~ log(Data$GenerationLength_d) + IucnRanks, family = 'poisson', data = Data); 
+model3KP.AverageGrantham_Poisson = glm(CategoryPoisson ~ scale(log2(GenerationLength_d)) + scale(AverageGrantham), family = 'poisson', data = Data); # model1 = glm(Data$KnKs ~ log(Data$GenerationLength_d) + IucnRanks, family = 'poisson', data = Data); 
 summary(model3KP.AverageGrantham_Poisson)
 
-model3KP.AverageGrantham_Binomial = glm(CategoryBinomial ~ log2(GenerationLength_d) + AverageGrantham, family = 'binomial', data = Data); # model1 = glm(Data$KnKs ~ log(Data$GenerationLength_d) + IucnRanks, family = 'poisson', data = Data); 
+model3KP.AverageGrantham_Binomial = glm(CategoryBinomial ~ scale(log2(GenerationLength_d)) + scale(AverageGrantham), family = 'binomial', data = Data); # model1 = glm(Data$KnKs ~ log(Data$GenerationLength_d) + IucnRanks, family = 'poisson', data = Data); 
 summary(model3KP.AverageGrantham_Binomial)
 
-ggplot(Data,aes(GenerationLength_d, AverageGrantham))+
+ggplot(Data,aes(GenerationLength_d, AverageGrantham))
   geom_point(size = 2)+
   geom_smooth(method = "lm")+
   facet_grid(.~category)
+
 
 #########
 # чем отличается log и log2?
