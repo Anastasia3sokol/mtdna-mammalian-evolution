@@ -4,6 +4,8 @@ wd = getwd()
 wd = paste(wd, '/mtdna-mammalian-evolution/Body/2Derived',sep='')
 setwd(wd)
 
+library(ggplot2)
+
 IUCN = read.csv("../../Body/1Raw/Red_book/IUCN.csv", sep=';', header = TRUE) #табличка по красной книге от Алины https://github.com/mitoclub/red-book/blob/master/Body/1Raw/IUCN.csv
 Data = read.table("../../Body/2Derived/Distances_KnKs_Ecology_RG.csv", sep='\t', header = TRUE)# табличка из скрипта 03 с дистанциями, KnKS и экологией
 
@@ -29,6 +31,9 @@ ggplot(Dist_with_IUCN, aes(x = log(GenerationLength_d), y = AverageGrantham, col
   geom_point()
 
 write.table(Dist_with_IUCN,file = "../../Body/2Derived/Dist_with_IUCN.csv",quote = F, row.names = FALSE,sep = '\t')
+
+Data = subset(Dist_with_IUCN, Dist_with_IUCN[,11] != "DD") # обрезаем Data Deficient тк ничего про них не знаем, их всего лишь 10
+Data$category = sub("NT","LC",Data$category) # категория NT присоединина к категории LC
 
 Data = subset(Dist_with_IUCN, Dist_with_IUCN[,11] != "DD") # обрезаем Data Deficient тк ничего про них не знаем, их всего лишь 10
 
@@ -101,3 +106,26 @@ ggplot(Data2,aes(GenerationLength_d, AverageGrantham))+
   geom_point(size = 2)+
   geom_smooth(method = "lm")+
   facet_grid(.~category)
+
+### PICs 
+
+library(ape)
+library(geiger)
+library(caper)
+
+cor.test(pic(Data$AverageGrantham, Data$), pic(data_tree$GenerationLength_d, tree_w), method = 'spearman')
+# rho = 0.07723414, p-value = 0.04939
+
+
+#Primates - приматы
+#Rodentia - грызуны
+#Carnivora - хищные
+#Afrosoricida - Афросорици́ды
+#Eulipotyphla - насекомоядные
+#Chiroptera - рукокрылые
+#Cetartiodactyla - китопарнокопытные
+#Proboscidea - хоботные
+#Didelphimorphia - опоссумы
+#Lagomorpha - зайцеобразные
+#Monotremata - однопроходные 
+#Scandentia - тупаи
