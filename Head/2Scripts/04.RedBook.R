@@ -35,8 +35,6 @@ write.table(Dist_with_IUCN,file = "../../Body/2Derived/Dist_with_IUCN.csv",quote
 Data = subset(Dist_with_IUCN, Dist_with_IUCN[,11] != "DD") # обрезаем Data Deficient тк ничего про них не знаем, их всего лишь 10
 Data$category = sub("NT","LC",Data$category) # категория NT присоединина к категории LC
 
-Data = subset(Dist_with_IUCN, Dist_with_IUCN[,11] != "DD") # обрезаем Data Deficient тк ничего про них не знаем, их всего лишь 10
-
 Data$CategoryPoisson = Data$category
 Data$CategoryPoisson = sub("LC",0,Data$CategoryPoisson)
 Data$CategoryPoisson = sub("NT",1,Data$CategoryPoisson)
@@ -52,9 +50,6 @@ Data$CategoryBinomial = as.numeric(sub("1",0,Data$CategoryBinomial))
 Data$CategoryBinomial = as.numeric(sub("2|3|4",1,Data$CategoryBinomial))
 table(Data$CategoryBinomial)
 
-#model1 = glm(KnKs ~ log2(GenerationLength_d) + category, family = 'poisson', data = Data); 
-#summary(model1)
-
 model1KP.KnKs_Poisson = glm(CategoryPoisson ~ scale(log2(GenerationLength_d)) + scale(KnKs), family = 'poisson', data = Data); 
 summary(model1KP.KnKs_Poisson)
 
@@ -66,9 +61,6 @@ ggplot(Data,aes(GenerationLength_d, KnKs))+
   geom_smooth(method = "lm")+
   facet_grid(.~category)
 
-#model3 = glm(AverageGrantham ~ log2(GenerationLength_d) + category, family = 'poisson', data = Data); # model1 = glm(Data$KnKs ~ log(Data$GenerationLength_d) + IucnRanks, family = 'poisson', data = Data); 
-#summary(model3)
-
 model3KP.AverageGrantham_Poisson = glm(CategoryPoisson ~ scale(log2(GenerationLength_d)) + scale(AverageGrantham), family = 'poisson', data = Data); # model1 = glm(Data$KnKs ~ log(Data$GenerationLength_d) + IucnRanks, family = 'poisson', data = Data); 
 summary(model3KP.AverageGrantham_Poisson)
 
@@ -79,42 +71,6 @@ ggplot(Data,aes(GenerationLength_d, AverageGrantham))
   geom_point(size = 2)+
   geom_smooth(method = "lm")+
   facet_grid(.~category)
-
-
-#########
-# чем отличается log и log2?
-
-Data2 = Data
-
-Data2$category = sub("2",'1',Data2$category)
-Data2$category = sub("3",'1',Data2$category)
-Data2$category = sub("4",'1',Data2$category)
-Data2$category = sub("5",'0',Data2$category) #Least Concern
-
-model2 = glm(KnKs ~ log2(GenerationLength_d) + category, family = 'binomial', data = Data2); 
-summary(model2)
-
-ggplot(Data2,aes(GenerationLength_d, KnKs))+
-  geom_point(size = 2)+
-  geom_smooth(method = "lm")+
-  facet_grid(.~category)
-
-model4 = glm(AverageGrantham ~ log2(GenerationLength_d) + category, family = 'poisson', data = Data2); # model1 = glm(Data$KnKs ~ log(Data$GenerationLength_d) + IucnRanks, family = 'poisson', data = Data); 
-summary(model4)
-
-ggplot(Data2,aes(GenerationLength_d, AverageGrantham))+
-  geom_point(size = 2)+
-  geom_smooth(method = "lm")+
-  facet_grid(.~category)
-
-### PICs 
-
-library(ape)
-library(geiger)
-library(caper)
-
-cor.test(pic(Data$AverageGrantham, Data$), pic(data_tree$GenerationLength_d, tree_w), method = 'spearman')
-# rho = 0.07723414, p-value = 0.04939
 
 
 #Primates - приматы
