@@ -1,8 +1,8 @@
   rm(list=ls(all=TRUE))
   
-  wd = getwd()
-  wd = paste(wd, '/mtdna-mammalian-evolution/Body/2Derived',sep='')
-  setwd(wd)
+  #wd = getwd()
+  #wd = paste(wd, '/mtdna-mammalian-evolution/Body/2Derived',sep='')
+  #setwd(wd)
   
   Grantham = read.table("../../Body/2Derived/Real_distances.csv", sep='\t', header = TRUE) 
   #Grantham = Grantham1[1:5000,]
@@ -144,6 +144,82 @@
   Data <- Data[,-9]
   write.table(Data,file = "../../Body/2Derived/Distances_KnKs_Ecology_RG.csv",quote = F, row.names = FALSE,sep = '\t')
   
+  #############################Табличка с грантхэмом, кнкс и экологией (в экологии будут пропуски) для Александра Купцова
+  
+  Data = read.table("../../Body/2Derived/Distances_KnKs_RG.csv", sep='\t', header = TRUE) 
+  GenLength <- read.xls("../../Body/1Raw/GenerationLengthForMammals.xlsx")# табличка с продолжительностью жизни от Алины
+  Taxa <- read.csv("../../Body/1Raw/TaxaWithClasses.txt", sep = " ")# таксономия от Али
+  
+  setdiff(Data$Species,Taxa$Species)# В таксономии Али не хватает 33 вида
+  
+  Data = merge(Data,Taxa, by.x = "Species", by.y = "Species",all.x =TRUE,no.dups = TRUE,)
+  
+  #	Canis_lupus_familiaris - домашняя собака
+  # Ctenomys_sp - какой то грызун
+  # Cynopterus_sp - летучая мышь
+  # Eospalax_baileyi - крот
+  # Eospalax_cansus - еще крот
+  # Gorilla_gorilla_gorilla 
+  # Mammuthus_sp - маммонт
+  # Mastomys_sp - грызун
+  # Muntiacus_sp - 
+  # Mus_musculus_castaneus
+  # Mus_musculus_domesticus
+  # Mus_musculus_molossinus
+  # Mus_musculus_musculus
+  # Myotis_sp - еще летучая мышь
+  # Niviventer_sp
+  # Ochotona_sp
+  # Peromyscus_sp
+  # Pteronotus_sp - еще летучая мышь
+  # Sus_scrofa_domesticus - домашняя свинья, надо удалять(
+  
+  #Data[Data$Species == "Canis_lupus_familiaris",]$Class = "Mammalia"
+  Data[Data$Species == "Ctenomys_sp",]$Class = "Mammalia"
+  Data[Data$Species == "Cynopterus_sp",]$Class = "Mammalia"
+  Data[Data$Species == "Eospalax_baileyi",]$Class = "Mammalia"
+  Data[Data$Species == "Eospalax_cansus",]$Class = "Mammalia"
+  Data[Data$Species == "Gorilla_gorilla_gorilla",]$Class = "Mammalia"
+  Data[Data$Species == "Mammuthus_sp",]$Class = "Mammalia"
+  Data[Data$Species == "Mastomys_sp",]$Class = "Mammalia"
+  Data[Data$Species == "Muntiacus_sp",]$Class = "Mammalia"
+  Data[Data$Species == "Mus_musculus_castaneus",]$Class = "Mammalia"
+  #Data[Data$Species == "Mus_musculus_domesticus",]$Class = "Mammalia"
+  Data[Data$Species == "Mus_musculus_molossinus",]$Class = "Mammalia"
+  Data[Data$Species == "Mus_musculus_musculus",]$Class = "Mammalia"
+  Data[Data$Species == "Myotis_sp",]$Class = "Mammalia"
+  Data[Data$Species == "Niviventer_sp",]$Class = "Mammalia"
+  Data[Data$Species == "Ochotona_sp",]$Class = "Mammalia"
+  Data[Data$Species == "Peromyscus_sp",]$Class = "Mammalia"
+  Data[Data$Species == "Pteronotus_sp",]$Class = "Mammalia"
+  #Data[Data$Species == "Sus_scrofa_domesticus",]$Class = "Mammalia"
+  
+  Data = Data[Data$Species == "Canis_lupus_familiaris",] # попытка удалить домашних
+  
+  Data = Data[Data$Class == "Mammalia",]
+  Data1 = Data[is.na(Data$AverageGrantham)==FALSE,]
+  Data1$Species = sub("_", " ", Data1$Species, ignore.case = FALSE, perl = FALSE, fixed = FALSE, useBytes = FALSE)
+  
+  NewData = merge(Data1,GenLength, by.x = "Species", by.y = "Scientific_name",all.x  = TRUE,no.dups = TRUE,)
+  
+  NewData <- NewData[,-12:-21]
+  NewData <- NewData[,-13]
+  NewData <- NewData[,-10]
+  NewData <- NewData[,-9]
+
+  IUCN = read.csv("../../Body/1Raw/Red_book/IUCN.csv", sep=';', header = TRUE) #табличка по красной книге от Алины https://github.com/mitoclub/red-book/blob/master/Body/1Raw/IUCN.csv
+  names(IUCN)[3] <- "Species"
+  
+  Dist_with_IUCN <- merge(NewData, IUCN,by.x = "Species", by.y = "Species",all.x  = T,no.dups = TRUE,)
+  
+  Dist_with_IUCN = Dist_with_IUCN [-11:-21]
+  Dist_with_IUCN = Dist_with_IUCN [,-11]
+  Dist_with_IUCN = Dist_with_IUCN [-12:-28]# тут обрезается куча данных, наверное, ненужных. В переменной category информация о том, в каком состоянии вид
+  
+  
+  write.table(Dist_with_IUCN,file = "../../Body/2Derived/Grantham_RedBook.csv",quote = F, row.names = FALSE,sep = '\t')
+
+  ##################### Корреляции
   
   #(i) FractionOfSyn ~ -GenerLength; 
   
@@ -281,9 +357,3 @@ median(Data[Data$Order =="Cetartiodactyla",]$GenerationLength_d)# продолж
 # Carnivora Cetartiodactyla Chiroptera Eulipotyphla Primates Rodentia 
 
 
-Data = read.table("../../Body/2Derived/Distances_KnKs_RG.csv", sep='\t', header = TRUE) 
-GenLength<- read.xls("../../Body/1Raw/GenerationLengthForMammals.xlsx")# табличка с продолжительностью жизни от Алины
-
-Data$Species = sub("_", " ", Data$Species, ignore.case = FALSE, perl = FALSE, fixed = FALSE, useBytes = FALSE)
-
-Data = merge(Data,GenLength, by.x = "Species", by.y = "Scientific_name",all = FALSE,no.dups = TRUE,)
