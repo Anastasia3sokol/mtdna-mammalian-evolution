@@ -4,6 +4,12 @@ wd = getwd()
 wd = paste(wd, '/mtdna-mammalian-evolution/Body/2Derived',sep='')
 setwd(wd)
 
+
+#### libraries
+#if (!requireNamespace("BiocManager", quietly = TRUE))
+#install.packages("BiocManager")
+#BiocManager::install("Biostrings")
+
 library(seqinr)
 library(Biostrings)
 library(dplyr)
@@ -12,12 +18,27 @@ SGC1 <- getGeneticCode("SGC1")  # Vertebrate Mitochondrial code for translate fu
 
 Codons = read.table("../../Body/2Derived/PolymorphicPairwiseCodons.txt") #датасет, созданный в скрипте 01,содержит вектор замещений SubstVec
 #Codons <- Codons2[1:10,]
+Codons_CytB = Codons[Codons$Gene == 'CytB',]#42975
+Codons_ATP6 = Codons[Codons$Gene == 'ATP6',]#8415
+Codons_ATP8 = Codons[Codons$Gene == 'ATP8',]#1890
+Codons_ND1 = Codons[Codons$Gene == 'ND1',]#5355
+Codons_ND2 = Codons[Codons$Gene == 'ND2',]#13770
+Codons_ND3 = Codons[Codons$Gene == 'ND3',]#2745
+Codons_ND4 = Codons[Codons$Gene == 'ND4',]#4500
+Codons_ND4L = Codons[Codons$Gene == 'ND4L',]#1800
+Codons_ND5 = Codons[Codons$Gene == 'ND5',]#4095
+Codons_ND6 = Codons[Codons$Gene == 'ND6',]#225
+Codons_COX1 = Codons[Codons$Gene == 'COX1',]#3780
+Codons_COX2 = Codons[Codons$Gene == 'COX2',]#3420
+Codons_COX3 = Codons[Codons$Gene == 'COX3',]#2880
+
+####################
+#Codons = Codons[Codons$Gene == 'COX3',]
+####################
 
 #Функция, которая считает общее количество замещений
 TotalDiv <- function(x) {Div = length(unlist(strsplit(x,';')))}
 Codons$TotalDiv <- apply(as.matrix(Codons$SubstVec),1,FUN = TotalDiv) #посчитанные замещения прикрепляются в колонку TotalDiv в датасет Codons
-
-####### Место для вставки реального грантхэма 
 
 Gr = read.table("../../Body/1Raw/Grantham - Sheet1.csv", sep=',', header = F)# таблица с дистанциями из статьи
 
@@ -88,4 +109,4 @@ for(i in 1:nrow(Codons)){
 }
 
 newCodons = Codons[, -7]
-write.table(newCodons,file = "../../Body/2Derived/Real_distances.csv",quote = F, row.names = FALSE,sep = '\t')
+write.table(newCodons,file = "../../Body/2Derived/Grantham.csv",quote = F, row.names = FALSE,sep = '\t')

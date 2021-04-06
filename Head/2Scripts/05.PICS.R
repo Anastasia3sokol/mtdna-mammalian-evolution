@@ -4,10 +4,17 @@ library(ape)
 library(geiger)
 library(caper)
 
+wd = getwd()
+wd = paste(wd, '/mtdna-mammalian-evolution/Body/2Derived',sep='')
+setwd(wd)
+
+
 tree = read.tree("../../Body/1Raw/FcC_supermatrix.part.treefile.txt") 
-data = read.csv ("../../Body/2Derived/Distances_KnKs_Ecology_RG.csv", sep = "\t")
+data = read.csv ("../../Body/2Derived/Distances_KnKs_Ecology.csv", sep = "\t")
 
 data = data[is.na(data$AverageGrantham)==F,]
+data = data[,-5:-8]
+data = data[,-3]
 
 data$Species = sub(" ", "_", data$Species, ignore.case = FALSE, perl = FALSE, fixed = FALSE, useBytes = FALSE)
 
@@ -20,7 +27,7 @@ tree_w = treedata(tree, data[, c('Species', 'AverageGrantham', 'KnKs', 'Generati
 data_tree = as.data.frame(treedata(tree_w, data[, c('Species', 'AverageGrantham', 'KnKs', 'GenerationLength_d')], 
                                    sort=T, warnings=T)$data)
 
-setdiff(tree_w$tip.label, data_tree$Species)
+setdiff(data$Species, data_tree$Species)#153 вида из наших данных не в дереве
 
 data_tree$AverageGrantham = as.numeric(as.character(data_tree$AverageGrantham))
 data_tree$GenerationLength_d = as.numeric(as.character(data_tree$GenerationLength_d))

@@ -4,7 +4,21 @@
   #wd = paste(wd, '/mtdna-mammalian-evolution/Body/2Derived',sep='')
   #setwd(wd)
   
-  Grantham = read.table("../../Body/2Derived/Real_distances.csv", sep='\t', header = TRUE) 
+  #CytB 42975
+  #ATP6 8415
+  #ATP8 1890
+  #ND1 5355
+  #ND2 13770
+  #ND3 2745
+  #ND4 4500
+  #ND4L 1800
+  #ND5 4095
+  #ND6 225
+  #COX1 3780
+  #COX2 3420
+  #COX3 2880  
+  
+  Grantham = read.csv("../../Body/2Derived/COX3.csv", sep='\t', header = T) 
   #Grantham = Grantham1[1:5000,]
   
       string.counter<-function(strings, pattern){  
@@ -124,7 +138,7 @@
   
   df5 <- merge(df4,df3,by.x = "Species", by.y = "Species",all = FALSE,no.dups = TRUE,)
   
-  write.table(df5,file = "../../Body/2Derived/Distances_KnKs_RG.csv",quote = F, row.names = FALSE,sep = '\t')
+  write.table(df5,file = "../../Body/2Derived/COX3_Distances.csv",quote = F, row.names = FALSE,sep = '\t')
   
   
   
@@ -142,7 +156,7 @@
   Data <- Data[,-11:-20]
   Data <- Data[,-12]
   Data <- Data[,-9]
-  write.table(Data,file = "../../Body/2Derived/Distances_KnKs_Ecology_RG.csv",quote = F, row.names = FALSE,sep = '\t')
+  write.table(Data,file = "../../Body/2Derived/CytB_Distances.csv",quote = F, row.names = FALSE,sep = '\t')
   
   #############################Табличка с грантхэмом, кнкс и экологией (в экологии будут пропуски) для Александра Купцова
   
