@@ -15,7 +15,7 @@
   library(RGenetics)
   SGC1 <- getGeneticCode("SGC1")  # Vertebrate Mitochondrial code for translate function
   
-  Codons2 = read.table("../../Body/2Derived/PolymorphicPairwiseCodons.txt") #датасет, созданный в скрипте 01,содержит вектор замещений SubstVec
+  Codons = read.table("../../Body/2Derived/PolymorphicPairwiseCodons.txt") #датасет, созданный в скрипте 01,содержит вектор замещений SubstVec
   #Codons <- Codons2[1:100,]
   
   ### functions which take example line as input and return different metrics: 
@@ -123,6 +123,6 @@ for(i in 1:nrow(Codons)){
 }
 newCodons = Codons[, -7]
 
-write.table(newCodons,file = "../../Body/2Derived/Granyham.csv",quote = F, row.names = FALSE,
+write.table(newCodons,file = "../../Body/2Derived/Grantham.csv",quote = F, row.names = FALSE,
               sep = '\t')
   

@@ -16,25 +16,8 @@ library(dplyr)
 library(RGenetics)
 SGC1 <- getGeneticCode("SGC1")  # Vertebrate Mitochondrial code for translate function
 
-Codons = read.table("../../Body/2Derived/PolymorphicPairwiseCodons.txt") #датасет, созданный в скрипте 01,содержит вектор замещений SubstVec
-#Codons <- Codons2[1:10,]
-Codons_CytB = Codons[Codons$Gene == 'CytB',]#42975
-Codons_ATP6 = Codons[Codons$Gene == 'ATP6',]#8415
-Codons_ATP8 = Codons[Codons$Gene == 'ATP8',]#1890
-Codons_ND1 = Codons[Codons$Gene == 'ND1',]#5355
-Codons_ND2 = Codons[Codons$Gene == 'ND2',]#13770
-Codons_ND3 = Codons[Codons$Gene == 'ND3',]#2745
-Codons_ND4 = Codons[Codons$Gene == 'ND4',]#4500
-Codons_ND4L = Codons[Codons$Gene == 'ND4L',]#1800
-Codons_ND5 = Codons[Codons$Gene == 'ND5',]#4095
-Codons_ND6 = Codons[Codons$Gene == 'ND6',]#225
-Codons_COX1 = Codons[Codons$Gene == 'COX1',]#3780
-Codons_COX2 = Codons[Codons$Gene == 'COX2',]#3420
-Codons_COX3 = Codons[Codons$Gene == 'COX3',]#2880
-
-####################
-#Codons = Codons[Codons$Gene == 'COX3',]
-####################
+Codons2 = read.table("../../Body/2Derived/PolymorphicPairwiseCodons.txt") #датасет, созданный в скрипте 01,содержит вектор замещений SubstVec
+Codons = Codons2[Codons2$Gene == 'CytB',]#42975
 
 #Функция, которая считает общее количество замещений
 TotalDiv <- function(x) {Div = length(unlist(strsplit(x,';')))}

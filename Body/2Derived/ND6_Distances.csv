@@ -1,0 +1,6 @@
+Species	AverageGrantham	SummOfAllGrantham	KnKs	MedianOfAllSyn	MedianOfAllNonsyn	FractionOfSyn	FractionOfNonsyn
+Coereba_flaveola	61.5	286	0.555555555555556	7	5	0.642857142857143	0.357142857142857
+Equus_caballus	38.5	77	0.666666666666667	2	2	0.5	0.5
+Garrulax_canorus	98	0	0	4	0	1	0
+Pomatorhinus_musicus	49.75	145	1	2	2	0.5	0.5
+Pomatorhinus_ruficollis	47	21	0.0869565217391304	16	1	0.92	0.08

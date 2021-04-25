@@ -4,21 +4,7 @@
   #wd = paste(wd, '/mtdna-mammalian-evolution/Body/2Derived',sep='')
   #setwd(wd)
   
-  #CytB 42975
-  #ATP6 8415
-  #ATP8 1890
-  #ND1 5355
-  #ND2 13770
-  #ND3 2745
-  #ND4 4500
-  #ND4L 1800
-  #ND5 4095
-  #ND6 225
-  #COX1 3780
-  #COX2 3420
-  #COX3 2880  
-  
-  Grantham = read.csv("../../Body/2Derived/COX3.csv", sep='\t', header = T) 
+  Grantham = read.csv("../../Body/2Derived/CytB.csv", sep='\t', header = T) 
   #Grantham = Grantham1[1:5000,]
   
       string.counter<-function(strings, pattern){  
@@ -138,102 +124,59 @@
   
   df5 <- merge(df4,df3,by.x = "Species", by.y = "Species",all = FALSE,no.dups = TRUE,)
   
-  write.table(df5,file = "../../Body/2Derived/COX3_Distances.csv",quote = F, row.names = FALSE,sep = '\t')
+  df5 = df5[is.na(df5$AverageGrantham)==F,]
   
-  
+  write.table(df5,file = "../../Body/2Derived/CytB_Distances.csv",quote = F, row.names = FALSE,sep = '\t')
+
   
   library(ape)
   library(gdata)
   library(ggplot2)
+  library(gtools)
   
-  Data = read.table("../../Body/2Derived/Distances_KnKs_RG.csv", sep='\t', header = TRUE) 
+  #Data = read.table("../../Body/2Derived/Grantham_Distances.csv", sep='\t', header = TRUE) 
+  Distances = read.table("../../Body/2Derived/CytB_Distances.csv", sep='\t', header = TRUE) 
+  
+
   GenLength<- read.xls("../../Body/1Raw/GenerationLengthForMammals.xlsx")# табличка с продолжительностью жизни от Алины
-  #GenLength <- GenLength1[1:1,]
-  Data$Species = sub("_", " ", Data$Species, ignore.case = FALSE, perl = FALSE, fixed = FALSE, useBytes = FALSE)
   
-  Data = merge(Data,GenLength, by.x = "Species", by.y = "Scientific_name",all = FALSE,no.dups = TRUE,)
-  
+  Distances$Species = sub("_", " ", Distances$Species, ignore.case = FALSE, perl = FALSE, fixed = FALSE, useBytes = FALSE)
+  Data = merge(Distances,GenLength, by.x = "Species", by.y = "Scientific_name",all = FALSE,no.dups = TRUE,)
+  RB = Data = merge(Distances,GenLength, by.x = "Species", by.y = "Scientific_name",all.x = T,no.dups = TRUE,)
   Data <- Data[,-11:-20]
   Data <- Data[,-12]
   Data <- Data[,-9]
-  write.table(Data,file = "../../Body/2Derived/CytB_Distances.csv",quote = F, row.names = FALSE,sep = '\t')
+  Data = Data[is.na(Data$AverageGrantham)==F,]
+  Data = Data[-220,]
   
-  #############################Табличка с грантхэмом, кнкс и экологией (в экологии будут пропуски) для Александра Купцова
+  RB <- RB[,-11:-20]
+  RB <- RB[,-12]
+  RB <- RB[,-9]
+  RB = RB[is.na(Data$AverageGrantham)==F,]
+  RB = RB[-220,]
   
-  Data = read.table("../../Body/2Derived/Distances_KnKs_RG.csv", sep='\t', header = TRUE) 
-  GenLength <- read.xls("../../Body/1Raw/GenerationLengthForMammals.xlsx")# табличка с продолжительностью жизни от Алины
-  Taxa <- read.csv("../../Body/1Raw/TaxaWithClasses.txt", sep = " ")# таксономия от Али
+  dnds = read.csv("../../Body/2Derived/DnDs.txt", sep = " ")
+  dnds$Species = sub("_", " ", dnds$Species, ignore.case = FALSE, perl = FALSE, fixed = FALSE, useBytes = FALSE)
   
-  setdiff(Data$Species,Taxa$Species)# В таксономии Али не хватает 33 вида
+ # Species = c()
+  #DnDs = c()
+  #Data1 = as.data.frame(Species,DnDs)
+  #for (i in 1:length(unique(data$Species))){
+  #Data1$Species = data$Species[i]
+  #}
+  Data1 = merge(Data,dnds, by.x = "Species", by.y = "Species",all.x = T,no.dups = TRUE,)
+  names(Data1) = c("1.Species","2.AverageGrantham","SummOfAllGrantham","3.KnKs","MedianOfAllSyn","MedianOfAllNonsyn","FractionOfSyn","FractionOfNonsyn","Order","5.GenerationLength_d","Gene","4.DnDs" )
+  Data = Data1[c(1, mixedorder(names(Data1)[-1]) + 1)];names(Data) = c("Species","AverageGrantham","KnKs","DnDs","GenerationLength_d","FractionOfNonsyn","FractionOfSyn","Gene","MedianOfAllNonsyn","MedianOfAllSyn","Order","SummOfAllGrantham" )
   
-  Data = merge(Data,Taxa, by.x = "Species", by.y = "Species",all.x =TRUE,no.dups = TRUE,)
+  Data2 = merge(RB,dnds, by.x = "Species", by.y = "Species",all=F,no.dups = TRUE,)
+  names(Data2) = c("1.Species","2.AverageGrantham","SummOfAllGrantham","3.KnKs","MedianOfAllSyn","MedianOfAllNonsyn","FractionOfSyn","FractionOfNonsyn","Order","5.GenerationLength_d","Gene","4.DnDs" )
+  Data2 = Data2[c(1, mixedorder(names(Data2)[-1]) + 1)];names(Data2) = c("Species","AverageGrantham","KnKs","DnDs","GenerationLength_d","FractionOfNonsyn","FractionOfSyn","Gene","MedianOfAllNonsyn","MedianOfAllSyn","Order","SummOfAllGrantham" )
   
-  #	Canis_lupus_familiaris - домашняя собака
-  # Ctenomys_sp - какой то грызун
-  # Cynopterus_sp - летучая мышь
-  # Eospalax_baileyi - крот
-  # Eospalax_cansus - еще крот
-  # Gorilla_gorilla_gorilla 
-  # Mammuthus_sp - маммонт
-  # Mastomys_sp - грызун
-  # Muntiacus_sp - 
-  # Mus_musculus_castaneus
-  # Mus_musculus_domesticus
-  # Mus_musculus_molossinus
-  # Mus_musculus_musculus
-  # Myotis_sp - еще летучая мышь
-  # Niviventer_sp
-  # Ochotona_sp
-  # Peromyscus_sp
-  # Pteronotus_sp - еще летучая мышь
-  # Sus_scrofa_domesticus - домашняя свинья, надо удалять(
-  
-  #Data[Data$Species == "Canis_lupus_familiaris",]$Class = "Mammalia"
-  Data[Data$Species == "Ctenomys_sp",]$Class = "Mammalia"
-  Data[Data$Species == "Cynopterus_sp",]$Class = "Mammalia"
-  Data[Data$Species == "Eospalax_baileyi",]$Class = "Mammalia"
-  Data[Data$Species == "Eospalax_cansus",]$Class = "Mammalia"
-  Data[Data$Species == "Gorilla_gorilla_gorilla",]$Class = "Mammalia"
-  Data[Data$Species == "Mammuthus_sp",]$Class = "Mammalia"
-  Data[Data$Species == "Mastomys_sp",]$Class = "Mammalia"
-  Data[Data$Species == "Muntiacus_sp",]$Class = "Mammalia"
-  Data[Data$Species == "Mus_musculus_castaneus",]$Class = "Mammalia"
-  #Data[Data$Species == "Mus_musculus_domesticus",]$Class = "Mammalia"
-  Data[Data$Species == "Mus_musculus_molossinus",]$Class = "Mammalia"
-  Data[Data$Species == "Mus_musculus_musculus",]$Class = "Mammalia"
-  Data[Data$Species == "Myotis_sp",]$Class = "Mammalia"
-  Data[Data$Species == "Niviventer_sp",]$Class = "Mammalia"
-  Data[Data$Species == "Ochotona_sp",]$Class = "Mammalia"
-  Data[Data$Species == "Peromyscus_sp",]$Class = "Mammalia"
-  Data[Data$Species == "Pteronotus_sp",]$Class = "Mammalia"
-  #Data[Data$Species == "Sus_scrofa_domesticus",]$Class = "Mammalia"
-  
-  Data = Data[Data$Species == "Canis_lupus_familiaris",] # попытка удалить домашних
-  
-  Data = Data[Data$Class == "Mammalia",]
-  Data1 = Data[is.na(Data$AverageGrantham)==FALSE,]
-  Data1$Species = sub("_", " ", Data1$Species, ignore.case = FALSE, perl = FALSE, fixed = FALSE, useBytes = FALSE)
-  
-  NewData = merge(Data1,GenLength, by.x = "Species", by.y = "Scientific_name",all.x  = TRUE,no.dups = TRUE,)
-  
-  NewData <- NewData[,-12:-21]
-  NewData <- NewData[,-13]
-  NewData <- NewData[,-10]
-  NewData <- NewData[,-9]
-
-  IUCN = read.csv("../../Body/1Raw/Red_book/IUCN.csv", sep=';', header = TRUE) #табличка по красной книге от Алины https://github.com/mitoclub/red-book/blob/master/Body/1Raw/IUCN.csv
-  names(IUCN)[3] <- "Species"
-  
-  Dist_with_IUCN <- merge(NewData, IUCN,by.x = "Species", by.y = "Species",all.x  = T,no.dups = TRUE,)
-  
-  Dist_with_IUCN = Dist_with_IUCN [-11:-21]
-  Dist_with_IUCN = Dist_with_IUCN [,-11]
-  Dist_with_IUCN = Dist_with_IUCN [-12:-28]# тут обрезается куча данных, наверное, ненужных. В переменной category информация о том, в каком состоянии вид
+  write.table(Data,file = "../../Body/2Derived/CytB_with_ecology.csv",quote = F, row.names = FALSE,sep = '\t')
+  write.table(Data2,file = "../../Body/2Derived/CytB_with_ecologyForRedBook.csv",quote = F, row.names = FALSE,sep = '\t')
   
   
-  write.table(Dist_with_IUCN,file = "../../Body/2Derived/Grantham_RedBook.csv",quote = F, row.names = FALSE,sep = '\t')
-
-  ##################### Корреляции
+##################### Корреляции
   
   #(i) FractionOfSyn ~ -GenerLength; 
   
@@ -268,7 +211,7 @@
   ggplot(Data, aes(x = log(GenerationLength_d), y = SummOfAllGrantham , fill = Order)) + 
     geom_boxplot()
   
-  #(iv) SummOfAllNonsyn ~ +GenerLength 
+  #(iv) MedianOfAllNonsyn ~ +GenerLength 
   cor.test(x = Data$GenerationLength_d, y = Data$MedianOfAllNonsyn , method = "spearm")
   GenerationLength_MedianOfAllNonsyn_fit  <- cor.test(x = Data$GenerationLength_d, y = Data$MedianOfAllNonsyn)
   
@@ -288,15 +231,6 @@
   ggplot(Data, aes(x = log(SummOfAllGrantham), y = MedianOfAllNonsyn , fill = Order)) + 
     geom_boxplot()
   
-  #(vi) AverageGranthamN ~ +GenerLength; 
-  cor.test(x = Data$GenerationLength_d, y = Data$AverageGrantham , method = "spearm")
-  GenerationLength_AverageGrantham_fit  <- cor.test(x = Data$GenerationLength_d, y = Data$AverageGrantham)
-  
-  ggplot(Data, aes(x = log(GenerationLength_d), y = AverageGrantham ,col = factor(Order) ))+
-    geom_point(size = 2)
-  
-  ggplot(Data, aes(x = log(GenerationLength_d), y = AverageGrantham, fill = Order)) + 
-    geom_boxplot()
   
   #(vii) AverageGrantham ~ +GenerLength; 
   cor.test(x = Data$GenerationLength_d, y = Data$AverageGrantham , method = "spearm")
@@ -317,6 +251,17 @@
   
   ggplot(Data, aes(x = log(GenerationLength_d), y = KnKs, fill = Order)) + 
     geom_boxplot()
+  
+  #(ix) DnDs ~ +GenerLength;
+  cor.test(x = Data$GenerationLength_d, y = Data$DnDs , method = "spearm")
+  GenerationLength_KnKs_fit  <- cor.test(x = Data$GenerationLength_d, y = Data$DnDs)
+  
+  ggplot(Data, aes(x = log(GenerationLength_d), y = DnDs ,col = factor(Order) ))+
+    geom_point(size = 2)
+  
+  ggplot(Data, aes(x = log(GenerationLength_d), y = DnDs, fill = Order)) + 
+    geom_boxplot()
+  
 ####################
   
 quantile(Data$GenerationLength_d, seq(from=0, to=1, by=0.25),na.rm = TRUE)  
@@ -338,14 +283,6 @@ boxplot(Data[Data$Order == "Eulipotyphla",]$KnKs,+
           Data[Data$Order == "Primates",]$KnKs, +
           Data[Data$Order =="Cetartiodactyla",]$KnKs, names = c('Eulipotyphla',"Rodentia",'Chiroptera','Carnivora',"Primates",'Cetartiodactyla'), outline = FALSE, xlab = "GenLenght", ylab = "KnKs")
 
-TempData = subset(Data, Data$Order == 'Eulipotyphla'|Data$Order =="Rodentia"|Data$Order =='Chiroptera'|Data$Order =='Carnivora'|Data$Order =="Primates"|Data$Order =='Cetartiodactyla')
-
-ggplot(TempData, aes(x=Order, y=KnKs,fill=Order)) + 
-     geom_violin(trim=FALSE)+ 
-  stat_summary(fun=median, geom="crossbar", size=1, color="red")+
-  labs(title="KnKs~GenLen",x="Order", y = "KnKs")+
-  theme_classic()
-
 boxplot(Data[Data$Order == "Eulipotyphla",]$AverageGrantham,+
           Data[Data$Order == "Rodentia",]$AverageGrantham, +
           Data[Data$Order == "Chiroptera",]$AverageGrantham, +
@@ -353,9 +290,18 @@ boxplot(Data[Data$Order == "Eulipotyphla",]$AverageGrantham,+
           Data[Data$Order == "Primates",]$AverageGrantham, +
           Data[Data$Order =="Cetartiodactyla",]$AverageGrantham, names = c('Eulipotyphla',"Rodentia",'Chiroptera','Carnivora',"Primates",'Cetartiodactyla'), outline = FALSE, xlab = "GenLenght", ylab = "AverageGrantham")
 
-ggplot(TempData, aes(x=Order, y=AverageGrantham,fill=Order)) + 
+TempData = subset(Data, Data$Order == 'Eulipotyphla'|Data$Order =="Rodentia"|Data$Order =='Chiroptera'|Data$Order =='Carnivora'|Data$Order =="Primates"|Data$Order =='Cetartiodactyla')
+
+ggplot(TempData, aes(x=Order, y=KnKs,fill=Order),notch=T) + 
+     geom_violin(trim=FALSE)+ 
+  stat_summary(fun=median, geom="crossbar", size=0.2, color="red")+
+  labs(title="KnKs~GenLen",x="Order", y = "KnKs")+
+  theme_classic()
+
+
+ggplot(TempData, aes(x=Order, y=AverageGrantham,fill=Order),notch=T) + 
   geom_violin(trim=FALSE)+ 
-  stat_summary(fun=median, geom="crossbar", size=1, color="red")+
+  stat_summary(fun=median, geom="crossbar", size=0.2, color="red")+
   labs(title="AverageGrantham~GenLen",x="Order", y = "AverageGrantham")+
   theme_classic()
 
@@ -369,5 +315,4 @@ boxplot(Data[Data$Order == "Carnivora",]$GenerationLength_d,+
 median(Data[Data$Order == "Primates",]$GenerationLength_d)
 median(Data[Data$Order =="Cetartiodactyla",]$GenerationLength_d)# продолжительность жизни китопарнокопытных чуть больше, чем у приматов
 # Carnivora Cetartiodactyla Chiroptera Eulipotyphla Primates Rodentia 
-
 

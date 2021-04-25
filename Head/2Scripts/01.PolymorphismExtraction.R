@@ -13,7 +13,7 @@ Final=data.frame('Gene','Species','FirstName','SecondName','SubstVec'); names(Fi
 Final=Final[-1,]
 
 for (file in List) # length(List)
-{# file = "Mastomys_sp..COX1.terminals.nuc.fa"
+{# file = "Abbottina_obtusirostris.CytB.terminals.nuc.fa"
   Sp <- read.table(paste(path,file,sep=''), header = FALSE)
   Species=unlist(strsplit(file,'\\.'))[1]
   Gene=unlist(strsplit(file,'\\.'))[2]
@@ -22,12 +22,12 @@ for (file in List) # length(List)
   # to solve it we can do the next:
   if (Gene == '') {Gene=unlist(strsplit(file,'\\.'))[3]}
 
-  Odd = seq(2,nrow(Sp),2)
-  NonOdd = seq(1,nrow(Sp),2)
-  SpSeq=data.frame(Sp[Odd,])
-  SpName=data.frame(Sp[NonOdd,])
-  Sp=cbind(SpName,SpSeq); names(Sp)=c('Name','Seq')
-  Sp$Name=gsub('>','',Sp$Name); Sp=Sp[Sp$Name != 'OUTGRP',]
+  Odd = seq(2,nrow(Sp),2)#обращается к четным строчкам файла (они содержат последовательности)
+  NonOdd = seq(1,nrow(Sp),2)#обращается к нечетным строчкам файла (они содержат имена последовательностей - организмы)
+  SpSeq=data.frame(Sp[Odd,])# создается таблица из последовательностей
+  SpName=data.frame(Sp[NonOdd,])# создается таблица из организмов
+  Sp=cbind(SpName,SpSeq); names(Sp)=c('Name','Seq')# таблицы с именами и последовательностями соединяются
+  Sp$Name=gsub('>','',Sp$Name); Sp=Sp[Sp$Name != 'OUTGRP',]#убираются значки >
   
   if (nrow(Sp)>=10) 
   {
@@ -65,7 +65,7 @@ length(unique(Final$Species)) #
          
 wd = gsub('/1Raw', '/2Derived', wd)
 setwd(wd)
-write.table(DifferenceBetweenSpecies, file = "DifferenceBetweenSpeciesFamilies.txt")
+#write.table(DifferenceBetweenSpecies, file = "DifferenceBetweenSpeciesFamilies.txt")
 
 write.table(Final,file = "PolymorphicPairwiseCodons.txt")
 #write.table(Final,"../../Body/2Derived/PolymorphicPairwiseCodons.txt")
