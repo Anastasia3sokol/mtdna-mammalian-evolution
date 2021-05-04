@@ -9,8 +9,7 @@ library(shades)
 library(ggplot2)
 
 IUCN = read.csv("../../Body/1Raw/Red_book/IUCN.csv", sep=';', header = TRUE) #табличка по красной книге от Алины https://github.com/mitoclub/red-book/blob/master/Body/1Raw/IUCN.csv
-Data = read.table("../../Body/2Derived/CytB_with_ecologyForRedBook.csv", sep='\t', header = TRUE)# табличка из скрипта 03 с дистанциями, KnKS и экологией
-
+Data = read.table("../../Body/2Derived/CytB_with_ecologyForRedBook.csv", sep='\t', header = TRUE)
 names(IUCN)[3] <- "Species"
 
 Dist_with_IUCN <- merge(Data, IUCN,by.x = "Species", by.y = "Species",all = FALSE,no.dups = TRUE,)
@@ -27,11 +26,11 @@ Dist_with_IUCN = Dist_with_IUCN [-14:-18]# тут обрезается куча 
 #NT - Near Threatened, Таксоны, близкие к уязвимому положению (4)
 #LC - Least Concern,таксоны, вызывающие наименьшие опасения (5)
 #DD - Data Deficient, Таксоны, для оценки угрозы которым недостаточно данных - выкинуть
-
+#EX - вымершие
 
 Data = subset(Dist_with_IUCN, Dist_with_IUCN$category != "DD") # обрезаем Data Deficient тк ничего про них не знаем, их всего лишь 10
 Data$category = sub("NT","LC",Data$category) # категория NT присоединина к категории LC
-Data$category = sub("LR/cd","LC",Data$category) # категория NT присоединина к категории LC
+Data$category = sub("LR/cd","LC",Data$category) # категория LR/cd присоединина к категории LC
 
 ggplot(Data, aes(x = log(GenerationLength_d), y = KnKs, col = factor(category),hsv(0.5, 0.7, 0.9, maxColorValue=255, alpha=0)))  +
   geom_point() 
@@ -75,11 +74,12 @@ fit = rbind (estimate,pvalue); rownames(fit)= c('estimate', 'p-value')
 
 ########### GLM
 
+Binomial = glm(CategoryBinomial ~ scale(AverageGrantham) + scale(KnKs)+scale(DnDs), family = 'binomial', data = Data); 
+summary(Binomial)
+
 Poisson = glm(CategoryPoisson ~ scale(AverageGrantham) + scale(KnKs) + scale(DnDs), family = 'poisson', data = Data); 
 summary(Poisson)
 
-Binomial = glm(CategoryBinomial ~ scale(AverageGrantham) + scale(KnKs)+scale(DnDs), family = 'binomial', data = Data); 
-summary(Binomial)
 
 ########## ПИКИ
 
@@ -98,7 +98,7 @@ Data$Species = sub(" ", "_", Data$Species, ignore.case = FALSE, perl = FALSE, fi
 
 row.names(Data) = Data$Species
 
-nrow(Data) # 344
+nrow(Data) # 347
 tree_w = treedata(tree, Data[, c('Species', 'AverageGrantham', 'KnKs','DnDs' ,"CategoryPoisson",'CategoryBinomial')], 
                   sort=T, warnings=T)$phy
 data_tree = as.data.frame(treedata(tree_w, Data[, c('Species', 'AverageGrantham', 'KnKs','DnDs',"CategoryPoisson",'CategoryBinomial')], 
@@ -158,13 +158,14 @@ phylosig(tree_w, DnDs, method = "lambda", test = TRUE)
 
 MutComp = comparative.data(tree_w, Data, Species, vcv=TRUE)
 
-summary(pgls(scale(AverageGrantham) ~ scale(CategoryPoisson), MutComp, lambda="ML"))
 summary(pgls(scale(AverageGrantham) ~ scale(CategoryBinomial), MutComp, lambda="ML"))
-summary(pgls(scale(KnKs) ~ scale(CategoryPoisson), MutComp, lambda="ML"))
-summary(pgls(scale(KnKs) ~ scale(CategoryBinomial), MutComp, lambda="ML"))
-summary(pgls(scale(DnDs) ~ scale(CategoryPoisson), MutComp, lambda="ML"))
-summary(pgls(scale(DnDs) ~ scale(CategoryBinomial), MutComp, lambda="ML"))
+summary(pgls(scale(AverageGrantham) ~ scale(CategoryPoisson), MutComp, lambda="ML"))
 
+summary(pgls(scale(DnDs) ~ scale(CategoryBinomial), MutComp, lambda="ML"))
+summary(pgls(scale(DnDs) ~ scale(CategoryPoisson), MutComp, lambda="ML"))
+
+summary(pgls(scale(KnKs) ~ scale(CategoryBinomial), MutComp, lambda="ML"))
+summary(pgls(scale(KnKs) ~ scale(CategoryPoisson), MutComp, lambda="ML"))
 
 ############ ДЕЛЕНИЕ ПО СЕМЕЙСТВАМ
 unique(Data$specieOrder) # [1] "RODENTIA","CARNIVORA","PRIMATES","EULIPOTYPHLA","CHIROPTERA","CETARTIODACTYLA","CINGULATA","PROBOSCIDEA","DIDELPHIMORPHIA"

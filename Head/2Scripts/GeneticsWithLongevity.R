@@ -14,7 +14,7 @@ data = read.table("../../Body/2Derived/CytB_with_ecology.csv", sep='\t', header 
 #(i) FractionOfSyn ~ -GenerLength; 
 
 cor.test(x = data$GenerationLength_d, y = data$FractionOfSyn , method = "spearm")
-GenerationLength_FractionOfSyn_fit  <- cor.test(x = data$GenerationLength_d, y = data$FractionOfSyn)
+GenerationLength_FractionOfSyn_fit  <- cor.test(x = data$GenerationLength_d, y = data$FractionOfSyn, method = "spearm")
 
 ggplot(data, aes(x = log(GenerationLength_d), y = FractionOfSyn ,col = factor(Order) ))+
   geom_point(size = 2)
@@ -25,7 +25,7 @@ ggplot(data, aes(x = log(GenerationLength_d), y = FractionOfSyn , fill = Order))
 #(ii) FractionOfNonsyn ~ +GenerLength; 
 
 cor.test(x = data$GenerationLength_d, y = data$FractionOfNonsyn , method = "spearm")
-GenerationLength_FractionOfNonsyn_fit  <- cor.test(x = data$GenerationLength_d, y = data$FractionOfNonsyn)
+GenerationLength_FractionOfNonsyn_fit  <- cor.test(x = data$GenerationLength_d, y = data$FractionOfNonsyn, method = "spearm")
 
 ggplot(data, aes(x = log(GenerationLength_d), y = FractionOfNonsyn ,col = factor(Order) ))+
   geom_point(size = 2)
@@ -35,7 +35,7 @@ ggplot(data, aes(x = log(GenerationLength_d), y = FractionOfNonsyn , fill = Orde
 
 #(iii) SummOfAllGrantham ~ +GenerLength; 
 cor.test(x = data$GenerationLength_d, y = data$SummOfAllGrantham , method = "spearm")
-GenerationLength_SummOfAllGrantham_fit  <- cor.test(x = data$GenerationLength_d, y = data$SummOfAllGrantham)
+GenerationLength_SummOfAllGrantham_fit  <- cor.test(x = data$GenerationLength_d, y = data$SummOfAllGrantham, method = "spearm")
 
 ggplot(data, aes(x = log(GenerationLength_d), y = SummOfAllGrantham ,col = factor(Order) ))+
   geom_point(size = 2)
@@ -45,7 +45,7 @@ ggplot(data, aes(x = log(GenerationLength_d), y = SummOfAllGrantham , fill = Ord
 
 #(iv) MedianOfAllNonsyn ~ +GenerLength 
 cor.test(x = data$GenerationLength_d, y = data$MedianOfAllNonsyn , method = "spearm")
-GenerationLength_MedianOfAllNonsyn_fit  <- cor.test(x = data$GenerationLength_d, y = data$MedianOfAllNonsyn)
+GenerationLength_MedianOfAllNonsyn_fit  <- cor.test(x = data$GenerationLength_d, y = data$MedianOfAllNonsyn, method = "spearm")
 
 ggplot(data, aes(x = log(GenerationLength_d), y = MedianOfAllNonsyn ,col = factor(Order) ))+
   geom_point(size = 2)
@@ -55,7 +55,7 @@ ggplot(data, aes(x = log(GenerationLength_d), y =MedianOfAllNonsyn , fill = Orde
 
 #(v) SummOfAllGrantham ~+SummOfAllNonsyn (проверка на вшивость)
 cor.test(x = data$SummOfAllGrantham, y = data$MedianOfAllNonsyn, method = "spearm")
-GenerationLength_MedianOfAllNonsyn_fit  <- cor.test(x = data$SummOfAllGrantham, y = data$MedianOfAllNonsyn)
+GenerationLength_MedianOfAllNonsyn_Grantham_fit  <- cor.test(x = data$SummOfAllGrantham, y = data$MedianOfAllNonsyn, method = "spearm")
 
 ggplot(data, aes(x = log(SummOfAllGrantham), y = MedianOfAllNonsyn ,col = factor(Order) ))+
   geom_point(size = 2)
@@ -65,7 +65,7 @@ ggplot(data, aes(x = log(SummOfAllGrantham), y = MedianOfAllNonsyn , fill = Orde
 
 #(vii) AverageGrantham ~ +GenerLength; 
 cor.test(x = data$GenerationLength_d, y = data$AverageGrantham , method = "spearm")
-GenerationLength_AverageGrantham_fit  <- cor.test(x = data$GenerationLength_d, y = data$AverageGrantham)
+GenerationLength_AverageGrantham_fit  <- cor.test(x = data$GenerationLength_d, y = data$AverageGrantham, method = "spearm")
 
 ggplot(data, aes(x = log(GenerationLength_d), y = AverageGrantham ,col = factor(Order) ))+
   geom_point(size = 2)
@@ -75,7 +75,7 @@ ggplot(data, aes(x = log(GenerationLength_d), y = AverageGrantham, fill = Order)
 
 #(viii) KnKs ~ +GenerLength; 
 cor.test(x = data$GenerationLength_d, y = data$KnKs , method = "spearm")
-GenerationLength_KnKs_fit  <- cor.test(x = data$GenerationLength_d, y = data$KnKs)
+GenerationLength_KnKs_fit  <- cor.test(x = data$GenerationLength_d, y = data$KnKs, method = "spearm")
 
 ggplot(data, aes(x = log(GenerationLength_d), y = KnKs ,col = factor(Order) ))+
   geom_point(size = 2)
@@ -85,13 +85,49 @@ ggplot(data, aes(x = log(GenerationLength_d), y = KnKs, fill = Order)) +
 
 #(ix) DnDs ~ +GenerLength;
 cor.test(x = data$GenerationLength_d, y = data$DnDs , method = "spearm")
-GenerationLength_DnDs_fit  <- cor.test(x = data$GenerationLength_d, y = data$DnDs)
+GenerationLength_DnDs_fit  <- cor.test(x = data$GenerationLength_d, y = data$DnDs, method = "spearm")
 
 ggplot(data, aes(x = log(GenerationLength_d), y = DnDs ,col = factor(Order) ))+
   geom_point(size = 2)
 
 ggplot(data, aes(x = log(GenerationLength_d), y = DnDs, fill = Order)) + 
   geom_boxplot()
+
+estimate = data.frame(GenerationLength_FractionOfSyn_fit$estimate,GenerationLength_FractionOfNonsyn_fit$estimate,GenerationLength_SummOfAllGrantham_fit$estimate,
+                      GenerationLength_MedianOfAllNonsyn_fit$estimate,GenerationLength_MedianOfAllNonsyn_Grantham_fit$estimate,GenerationLength_AverageGrantham_fit$estimate,
+                      GenerationLength_KnKs_fit$estimate,GenerationLength_DnDs_fit$estimate);names(estimate) = c('FractionOfSyn','FractionOfNonsyni','SummOfAllGrantham','MedianOfAllNonsyn','MedianOfAllNonsyn_Grantham','AverageGrantham','KnKs','DnDs')
+pvalue = data.frame(GenerationLength_FractionOfSyn_fit$p.value,GenerationLength_FractionOfNonsyn_fit$p.value,GenerationLength_SummOfAllGrantham_fit$p.value,
+                    GenerationLength_MedianOfAllNonsyn_fit$p.value,GenerationLength_MedianOfAllNonsyn_fit$p.value,GenerationLength_AverageGrantham_fit$p.value,
+                    GenerationLength_KnKs_fit$p.value,GenerationLength_DnDs_fit$p.value);names(pvalue) = c('FractionOfSyn','FractionOfNonsyni','SummOfAllGrantham','MedianOfAllNonsyn','MedianOfAllNonsyn_Grantham','AverageGrantham','KnKs','DnDs')
+  
+fit = rbind (estimate,pvalue); rownames(fit)= c('estimate', 'p-value') ########## Табличка с результатами корреляций
+
+##### boxplots by quartiles
+
+Data = data
+quantile(Data$GenerationLength_d, seq(from=0, to=1, by=0.25),na.rm = TRUE)  
+
+boxplot(Data[Data$GenerationLength_d < 637.3329,]$AverageGrantham, +
+          Data[Data$GenerationLength_d < 1825.0000 & Data$GenerationLength_d > 637.3329,]$AverageGrantham, +
+          Data[Data$GenerationLength_d < 2869.6933 & Data$GenerationLength_d > 1825.0000,]$AverageGrantham, +
+          Data[Data$GenerationLength_d > 2869.6933,]$AverageGrantham, names = c('Q1','Q2', 'Q3','Q4'), outline = FALSE, xlab = "GenLenght", ylab = "AverageGrantham",notch = TRUE)
+
+boxplot(Data[Data$GenerationLength_d < 637.3329,]$KnKs, +
+          Data[Data$GenerationLength_d < 1825.0000 & Data$GenerationLength_d > 637.3329,]$KnKs, +
+          Data[Data$GenerationLength_d < 2869.6933 & Data$GenerationLength_d > 1825.0000,]$KnKs, +
+          Data[Data$GenerationLength_d > 2869.6933,]$KnKs, names = c('Q1','Q2', 'Q3','Q4'), outline = FALSE, xlab = "GenLenght", ylab = "KnKs",notch = TRUE)
+
+
+boxplot(data[data$GenerationLength_d<=quantile(data$GenerationLength_d,0.25),]$AverageGrantham,
+        data[data$GenerationLength_d>quantile(data$GenerationLength_d,0.25) & data$GenerationLength_d<=quantile(data$GenerationLength_d,0.5),]$AverageGrantham,
+        data[data$GenerationLength_d>quantile(data$GenerationLength_d,0.5) & data$GenerationLength_d<=quantile(data$GenerationLength_d,0.75),]$AverageGrantham,
+        data[data$GenerationLength_d>quantile(data$GenerationLength_d,0.75),]$AverageGrantham,
+        names=c('1','2','3','4'), outline = FALSE, notch = TRUE)
+boxplot(data[data$GenerationLength_d<=quantile(data$GenerationLength_d,0.25),]$DnDs,
+        data[data$GenerationLength_d>quantile(data$GenerationLength_d,0.25) & data$GenerationLength_d<=quantile(data$GenerationLength_d,0.5),]$DnDs,
+        data[data$GenerationLength_d>quantile(data$GenerationLength_d,0.5) & data$GenerationLength_d<=quantile(data$GenerationLength_d,0.75),]$DnDs,
+        data[data$GenerationLength_d>quantile(data$GenerationLength_d,0.75),]$DnDs,
+        names=c('1','2','3','4'), outline = FALSE, notch = TRUE)
 
 ##################### ПИКИ
 
@@ -120,42 +156,26 @@ data_tree$GenerationLength_d = as.numeric(as.character(data_tree$GenerationLengt
 data_tree$KnKs = as.numeric(as.character(data_tree$KnKs))
 
 #GenLen & Grantham
-cor.test(pic(data_tree$AverageGrantham, tree_w), pic(log2(data_tree$GenerationLength_d), tree_w), method = 'spearman')
-cor.test(data_tree$AverageGrantham,data_tree$GenerationLength_d, method = 'spearman')
+GranthamPIC = cor.test(pic(data_tree$AverageGrantham, tree_w), pic(log2(data_tree$GenerationLength_d), tree_w), method = 'spearman')
+Grantham = cor.test(data_tree$AverageGrantham,data_tree$GenerationLength_d, method = 'spearman')
 
 #GenLen & DnDs
-cor.test(pic(data_tree$DnDs, tree_w), pic(log2(data_tree$GenerationLength_d), tree_w), method = 'spearman')
-cor.test(as.numeric(data_tree$DnDs),data_tree$GenerationLength_d, method = 'spearman')
+DnDsPIC = cor.test(pic(data_tree$DnDs, tree_w), pic(log2(data_tree$GenerationLength_d), tree_w), method = 'spearman')
+DnDs = cor.test(as.numeric(data_tree$DnDs),data_tree$GenerationLength_d, method = 'spearman')
 
 #GenLen & KnKs
-cor.test(pic(data_tree$KnKs, tree_w), pic(log2(data_tree$GenerationLength_d), tree_w), method = 'spearman')
-cor.test(data_tree$KnKs,data_tree$GenerationLength_d, method = 'spearman')
+KnKsPIC = cor.test(pic(data_tree$KnKs, tree_w), pic(log2(data_tree$GenerationLength_d), tree_w), method = 'spearman')
+KnKs = cor.test(data_tree$KnKs,data_tree$GenerationLength_d, method = 'spearman')
+
+estimate = data.frame(GranthamPIC$estimate,Grantham$estimate,DnDsPIC$estimate,
+                      DnDs$estimate,KnKsPIC$estimate,KnKs$estimate);names(estimate) = c('GranthamPIC','Grantham','DnDsPIC','DnDs','KnKsPIC','KnKs')
+pvalue = data.frame(GranthamPIC$p.value,Grantham$p.value,DnDsPIC$p.value,
+                    DnDs$p.value,KnKsPIC$p.value,KnKs$p.value);names(pvalue) = c('GranthamPIC','Grantham','DnDsPIC','DnDs','KnKsPIC','KnKs')
+
+fit_PICS = rbind (estimate,pvalue); rownames(fit)= c('estimate', 'p-value') ############ Табличка с результатами Пиков
 
 ######### МАНН-УИТНИ
-Data = data
-quantile(Data$GenerationLength_d, seq(from=0, to=1, by=0.25),na.rm = TRUE)  
 
-boxplot(Data[Data$GenerationLength_d < 637.3329,]$AverageGrantham, +
-          Data[Data$GenerationLength_d < 1825.0000 & Data$GenerationLength_d > 637.3329,]$AverageGrantham, +
-          Data[Data$GenerationLength_d < 2869.6933 & Data$GenerationLength_d > 1825.0000,]$AverageGrantham, +
-          Data[Data$GenerationLength_d > 2869.6933,]$AverageGrantham, names = c('Q1','Q2', 'Q3','Q4'), outline = FALSE, xlab = "GenLenght", ylab = "AverageGrantham",notch = TRUE)
-
-boxplot(Data[Data$GenerationLength_d < 637.3329,]$KnKs, +
-          Data[Data$GenerationLength_d < 1825.0000 & Data$GenerationLength_d > 637.3329,]$KnKs, +
-          Data[Data$GenerationLength_d < 2869.6933 & Data$GenerationLength_d > 1825.0000,]$KnKs, +
-          Data[Data$GenerationLength_d > 2869.6933,]$KnKs, names = c('Q1','Q2', 'Q3','Q4'), outline = FALSE, xlab = "GenLenght", ylab = "KnKs",notch = TRUE)
-
-##### boxplots by quartiles
-boxplot(data[data$GenerationLength_d<=quantile(data$GenerationLength_d,0.25),]$AverageGrantham,
-        data[data$GenerationLength_d>quantile(data$GenerationLength_d,0.25) & data$GenerationLength_d<=quantile(data$GenerationLength_d,0.5),]$AverageGrantham,
-        data[data$GenerationLength_d>quantile(data$GenerationLength_d,0.5) & data$GenerationLength_d<=quantile(data$GenerationLength_d,0.75),]$AverageGrantham,
-        data[data$GenerationLength_d>quantile(data$GenerationLength_d,0.75),]$AverageGrantham,
-        names=c('1','2','3','4'), outline = FALSE, notch = TRUE)
-boxplot(data[data$GenerationLength_d<=quantile(data$GenerationLength_d,0.25),]$DnDs,
-        data[data$GenerationLength_d>quantile(data$GenerationLength_d,0.25) & data$GenerationLength_d<=quantile(data$GenerationLength_d,0.5),]$DnDs,
-        data[data$GenerationLength_d>quantile(data$GenerationLength_d,0.5) & data$GenerationLength_d<=quantile(data$GenerationLength_d,0.75),]$DnDs,
-        data[data$GenerationLength_d>quantile(data$GenerationLength_d,0.75),]$DnDs,
-        names=c('1','2','3','4'), outline = FALSE, notch = TRUE)
 
 wilcox.test(data$AverageGrantham,data$GenerationLength_d)
 wilcox.test(data$DnDs,data$GenerationLength_d)
@@ -197,10 +217,22 @@ phylosig(tree_w, DnDs, method = "lambda", test = TRUE)
 
 MutComp = comparative.data(tree_w, data, Species, vcv=TRUE)
 
+AverageGrantham_GenerationLength_d = pgls(scale(AverageGrantham) ~ log2(GenerationLength_d), MutComp, lambda="ML")
 summary(pgls(scale(AverageGrantham) ~ log2(GenerationLength_d), MutComp, lambda="ML"))
+
+KnKs_GenerationLength_d= pgls(scale(KnKs) ~ log2(GenerationLength_d), MutComp, lambda="ML")
 summary(pgls(scale(KnKs) ~ log2(GenerationLength_d), MutComp, lambda="ML"))
+
+DnDs_GenerationLength_d= pgls(scale(DnDs) ~ log2(GenerationLength_d), MutComp, lambda="ML")
 summary(pgls(scale(DnDs) ~ log2(GenerationLength_d), MutComp, lambda="ML"))
 
+Intercept = data.frame(AverageGrantham_GenerationLength_d$sterr[[1]],KnKs_GenerationLength_d$sterr[[1]],DnDs_GenerationLength_d$sterr[[1]]);names(Intercept) = c('AverageGrantham_GenerationLength_d','KnKs_GenerationLength_d','DnDs_GenerationLength_d')
+GenerationLength_d = data.frame(AverageGrantham_GenerationLength_d$sterr[[2]],KnKs_GenerationLength_d$sterr[[2]],DnDs_GenerationLength_d$sterr[[2]]);names(GenerationLength_d) = c('AverageGrantham_GenerationLength_d','KnKs_GenerationLength_d','DnDs_GenerationLength_d')
+
+Intercept = c(AverageGrantham_GenerationLength_d$sterr[1],KnKs_GenerationLength_d$sterr[1],DnDs_GenerationLength_d$sterr[1]);
+names(Intercept) = c('AverageGrantham_GenerationLength_d','KnKs_GenerationLength_d','DnDs_GenerationLength_d')
+
+PGLS= rbind (Intercept,GenerationLength_d); rownames(PGLS)= c('Intercept', 'log2(GenerationLength_d)') ############ Табличка с результатами PGLS
 
 ######################## ДЕЛЕНИЕ ПО СЕМЕЙСТВАМ
 
@@ -213,11 +245,11 @@ Mammalia = data[data$Order %in% FrequentOrders,]
 agg = aggregate(list(Mammalia$AverageGrantham,Mammalia$GenerationLength_d,Mammalia$DnDs,Mammalia$KnKs), by = list(Mammalia$Order), FUN = median)
 names(agg) = c('Order','AverageGrantham','GenerationLength_d','DnDs','KnKs')
 
-test1 = cor.test(agg$AverageGrantham,agg$GenerationLength_d,method = 'spearman') ### 0.008503, Rho = 0.8434347 !!!#не работает с пропусками в продолжительности жизни
+test1 = cor.test(agg$AverageGrantham,agg$GenerationLength_d,method = 'spearman') 
 plot(agg$GenerationLength_d,agg$AverageGrantham)
-test2 = cor.test(agg$DnDs,agg$GenerationLength_d,method = 'spearman') ### 0.01071, Rho = 0.8571429 !!!
+test2 = cor.test(agg$DnDs,agg$GenerationLength_d,method = 'spearman') 
 plot(agg$DnDs,agg$AverageGrantham)
-test3 = cor.test(agg$KnKs,agg$GenerationLength_d,method = 'spearman') ### 0.004563, Rho = 0.9047619 !!!
+test3 = cor.test(agg$KnKs,agg$GenerationLength_d,method = 'spearman')
 plot(agg$KnKs,agg$AverageGrantham)
 
 OrderGrantham_GenLen = c(test1$p.value,test1$estimate)
@@ -236,11 +268,11 @@ Mammalia1 = data[data$family %in% FrequentFamilies,]
 agg1 = aggregate(list(Mammalia1$AverageGrantham,Mammalia1$GenerationLength_d,Mammalia1$DnDs,Mammalia1$KnKs), by = list(Mammalia1$family), FUN = median)
 names(agg1) = c('Family','AverageGrantham','GenerationLength_d','DnDs','KnKs')
 
-test4 = cor.test(agg1$AverageGrantham,agg1$GenerationLength_d,method = 'spearman') ### 0.00281, Rho = 0.5108606 !!!
+test4 = cor.test(agg1$AverageGrantham,agg1$GenerationLength_d,method = 'spearman')
 plot(agg1$GenerationLength_d,agg1$AverageGrantham)
-test5 = cor.test(agg1$DnDs,agg1$GenerationLength_d,method = 'spearman') ### 0.003045, Rho = 0.5128299 !!!
+test5 = cor.test(agg1$DnDs,agg1$GenerationLength_d,method = 'spearman') 
 plot(agg1$DnDs,agg1$AverageGrantham)
-test6 = cor.test(agg1$KnKs,agg1$GenerationLength_d,method = 'spearman') ### 0.01945, Rho = 0.4109991  !!!
+test6 = cor.test(agg1$KnKs,agg1$GenerationLength_d,method = 'spearman') 
 plot(agg1$KnKs,agg1$AverageGrantham)
 
 FamilyGrantham_GenLen = c(test4$p.value,test4$estimate)
@@ -256,36 +288,37 @@ agg$GenerationLength_d = round(agg$GenerationLength_d,0)
 
 #################### Боксплоты по отрядам и семействам
 
-Order=c("Eulipotyphla","Rodentia","Didelphimorphia","Lagomorpha","Chiroptera","Carnivora","Cetartiodactyla","Cetartiodactyla")#    
-median_DnDs = c(median(Data[Data$Order == 'Eulipotyphla',]$DnDs),median(Data[Data$Order == 'Rodentia',]$DnDs),median(Data[Data$Order == 'Didelphimorphia',]$DnDs),
-                median(Data[Data$Order == 'Lagomorpha',]$DnDs),median(Data[Data$Order == 'Chiroptera',]$DnDs),median(Data[Data$Order == 'Carnivora',]$DnDs),
-                median(Data[Data$Order == 'Cetartiodactyla',]$DnDs),median(Data[Data$Order == 'Cetartiodactyla',]$DnDs))
-median_KnKs = c(median(Data[Data$Order == 'Eulipotyphla',]$KnKs),median(Data[Data$Order == 'Rodentia',]$KnKs),median(Data[Data$Order == 'Didelphimorphia',]$KnKs),
-                median(Data[Data$Order == 'Lagomorpha',]$KnKs),median(Data[Data$Order == 'Chiroptera',]$KnKs),median(Data[Data$Order == 'Carnivora',]$KnKs),
-                median(Data[Data$Order == 'Cetartiodactyla',]$KnKs),median(Data[Data$Order == 'Cetartiodactyla',]$KnKs))
+#Order=c("Eulipotyphla","Rodentia","Didelphimorphia","Lagomorpha","Chiroptera","Carnivora","Cetartiodactyla","Cetartiodactyla")#    
+#median_DnDs = c(median(Data[Data$Order == 'Eulipotyphla',]$DnDs),median(Data[Data$Order == 'Rodentia',]$DnDs),median(Data[Data$Order == 'Didelphimorphia',]$DnDs),
+#                median(Data[Data$Order == 'Lagomorpha',]$DnDs),median(Data[Data$Order == 'Chiroptera',]$DnDs),median(Data[Data$Order == 'Carnivora',]$DnDs),
+#                median(Data[Data$Order == 'Cetartiodactyla',]$DnDs),median(Data[Data$Order == 'Cetartiodactyla',]$DnDs))
+#median_KnKs = c(median(Data[Data$Order == 'Eulipotyphla',]$KnKs),median(Data[Data$Order == 'Rodentia',]$KnKs),median(Data[Data$Order == 'Didelphimorphia',]$KnKs),
+#                median(Data[Data$Order == 'Lagomorpha',]$KnKs),median(Data[Data$Order == 'Chiroptera',]$KnKs),median(Data[Data$Order == 'Carnivora',]$KnKs),
+#                median(Data[Data$Order == 'Cetartiodactyla',]$KnKs),median(Data[Data$Order == 'Cetartiodactyla',]$KnKs))
 
-median_GenerationLength_d = c(median(Data[Data$Order == 'Eulipotyphla',]$GenerationLength_d),median(Data[Data$Order == 'Rodentia',]$GenerationLength_d),median(Data[Data$Order == 'Didelphimorphia',]$GenerationLength_d),
-                              median(Data[Data$Order == 'Lagomorpha',]$GenerationLength_d),median(Data[Data$Order == 'Chiroptera',]$GenerationLength_d),median(Data[Data$Order == 'Carnivora',]$GenerationLength_d),
-                              median(Data[Data$Order == 'Cetartiodactyla',]$GenerationLength_d),median(Data[Data$Order == 'Cetartiodactyla',]$GenerationLength_d))
-median_AverageGrantham = c(median(Data[Data$Order == 'Eulipotyphla',]$AverageGrantham),median(Data[Data$Order == 'Rodentia',]$AverageGrantham),median(Data[Data$Order == 'Didelphimorphia',]$AverageGrantham),
-                           median(Data[Data$Order == 'Lagomorpha',]$AverageGrantham),median(Data[Data$Order == 'Chiroptera',]$AverageGrantham),median(Data[Data$Order == 'Carnivora',]$AverageGrantham),
-                           median(Data[Data$Order == 'Cetartiodactyla',]$AverageGrantham),median(Data[Data$Order == 'Cetartiodactyla',]$AverageGrantham))
-number_of_species = c(length(unique(Data[Data$Order == 'Eulipotyphla',]$Species)),length(unique(Data[Data$Order == 'Rodentia',]$Species)),length(unique(Data[Data$Order == 'Didelphimorphia',]$Species)),
-                      length(unique(Data[Data$Order == 'Lagomorpha',]$Species)),length(unique(Data[Data$Order == 'Chiroptera',]$Species)),length(unique(Data[Data$Order == 'Carnivora',]$Species)),
-                      length(unique(Data[Data$Order == 'Cetartiodactyla',]$Species)),length(unique(Data[Data$Order == 'Cetartiodactyla',]$Species)))
+#median_GenerationLength_d = c(median(Data[Data$Order == 'Eulipotyphla',]$GenerationLength_d),median(Data[Data$Order == 'Rodentia',]$GenerationLength_d),median(Data[Data$Order == 'Didelphimorphia',]$GenerationLength_d),
+#                              median(Data[Data$Order == 'Lagomorpha',]$GenerationLength_d),median(Data[Data$Order == 'Chiroptera',]$GenerationLength_d),median(Data[Data$Order == 'Carnivora',]$GenerationLength_d),
+ #                             median(Data[Data$Order == 'Cetartiodactyla',]$GenerationLength_d),median(Data[Data$Order == 'Cetartiodactyla',]$GenerationLength_d))
+#median_AverageGrantham = c(median(Data[Data$Order == 'Eulipotyphla',]$AverageGrantham),median(Data[Data$Order == 'Rodentia',]$AverageGrantham),median(Data[Data$Order == 'Didelphimorphia',]$AverageGrantham),
+#                           median(Data[Data$Order == 'Lagomorpha',]$AverageGrantham),median(Data[Data$Order == 'Chiroptera',]$AverageGrantham),median(Data[Data$Order == 'Carnivora',]$AverageGrantham),
+#                           median(Data[Data$Order == 'Cetartiodactyla',]$AverageGrantham),median(Data[Data$Order == 'Cetartiodactyla',]$AverageGrantham))
+#number_of_species = c(length(unique(Data[Data$Order == 'Eulipotyphla',]$Species)),length(unique(Data[Data$Order == 'Rodentia',]$Species)),length(unique(Data[Data$Order == 'Didelphimorphia',]$Species)),
+#                      length(unique(Data[Data$Order == 'Lagomorpha',]$Species)),length(unique(Data[Data$Order == 'Chiroptera',]$Species)),length(unique(Data[Data$Order == 'Carnivora',]$Species)),
+#                      length(unique(Data[Data$Order == 'Cetartiodactyla',]$Species)),length(unique(Data[Data$Order == 'Cetartiodactyla',]$Species)))
 
-Genetics_Ecology = data.frame(Order,median_GenerationLength_d,median_AverageGrantham,median_DnDs,median_KnKs,number_of_species) 
-Genetics_Ecology = Genetics_Ecology[order(Genetics_Ecology$median_GenerationLength_d),]
+#Genetics_Ecology = data.frame(Order,median_GenerationLength_d,median_AverageGrantham,median_DnDs,median_KnKs,number_of_species) 
+#Genetics_Ecology = Genetics_Ecology[order(Genetics_Ecology$median_GenerationLength_d),]# генетика ~ продолжительность жизни по семействам
 
-All_statistics = c(GenerationLength_FractionOfSyn_fit$estimate,GenerationLength_FractionOfNonsyn_fit$estimate,GenerationLength_SummOfAllGrantham_fit$estimate,
-                   GenerationLength_MedianOfAllNonsyn_fit$estimate,GenerationLength_AverageGrantham_fit$estimate,GenerationLength_KnKs_fit$estimate,GenerationLength_DnDs_fit$estimate)
 
-All_pvalue = c(GenerationLength_FractionOfSyn_fit$p.value,GenerationLength_FractionOfNonsyn_fit$p.value,GenerationLength_SummOfAllGrantham_fit$p.value,
-               GenerationLength_MedianOfAllNonsyn_fit$p.value,GenerationLength_AverageGrantham_fit$p.value,GenerationLength_KnKs_fit$p.value,GenerationLength_DnDs_fit$p.value)
+#All_statistics = c(GenerationLength_FractionOfSyn_fit$estimate,GenerationLength_FractionOfNonsyn_fit$estimate,GenerationLength_SummOfAllGrantham_fit$estimate,
+#                   GenerationLength_MedianOfAllNonsyn_fit$estimate,GenerationLength_AverageGrantham_fit$estimate,GenerationLength_KnKs_fit$estimate,GenerationLength_DnDs_fit$estimate)
 
-Variable = c('FractionOfSyn','FractionOfNonsyn','SummOfAllGrantham','MedianOfAllNonsyn','AverageGrantham','KnKs','DnDs')
+#All_pvalue = c(GenerationLength_FractionOfSyn_fit$p.value,GenerationLength_FractionOfNonsyn_fit$p.value,GenerationLength_SummOfAllGrantham_fit$p.value,
+#               GenerationLength_MedianOfAllNonsyn_fit$p.value,GenerationLength_AverageGrantham_fit$p.value,GenerationLength_KnKs_fit$p.value,GenerationLength_DnDs_fit$p.value)
 
-Corr_with_GenLen = data.frame(Variable, All_statistics,All_pvalue) 
+#Variable = c('FractionOfSyn','FractionOfNonsyn','SummOfAllGrantham','MedianOfAllNonsyn','AverageGrantham','KnKs','DnDs')
+
+#Corr_with_GenLen = data.frame(Variable, All_statistics,All_pvalue) 
 
 boxplot(Data[Data$Order == "Eulipotyphla",]$KnKs,+
           Data[Data$Order == "Rodentia",]$KnKs, +
@@ -357,3 +390,4 @@ par(mar = c(4, 4, 4, 4))
 boxplotdou(Y,X, xlim = c(0,6500), name.on.axis = FALSE, cex = 1, pch = 0, cex.lab = 1, cex.axis = 1, col = rainbow(11)) # name.on.axis = FALSE factor.labels = FALSE,  draw.legend = TRUE
 
 ##########################
+
