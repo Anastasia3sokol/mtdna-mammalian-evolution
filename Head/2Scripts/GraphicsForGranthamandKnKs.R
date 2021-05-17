@@ -2,7 +2,7 @@ rm(list=ls(all=TRUE))
 
 library(ggplot2)
 
-gr = read.table('../../mtdna-mammalian-evolution/Body/2Derived/TrioTracerA.PairWiseAnnotation.txt')
+gr = read.table('../../Body/2Derived/TrioTracerA.PairWiseAnnotation.txt')
 
 countavggrall = function(x)
 {
@@ -35,7 +35,7 @@ gr$avggr1In1Out =  apply(as.matrix(gr$DistanceIn1Out),1,countavggr1)
 gr = gr[,-c(5,6,7)]
 
 
-genlen = read.table('../../mtdna-mammalian-evolution/Body/1Raw/GenerationLenghtforMammals.xlsx.txt',header = TRUE, sep = '\t')
+genlen = read.table('../../Body/1Raw/GenerationLenghtforMammals.xlsx.txt',header = TRUE, sep = '\t')
 genlen = genlen[ ,c(2,11)] # Take information about name and GenLength
 genlen$Scientific_name = gsub(' ','_',genlen$Scientific_name) 
 
@@ -100,7 +100,7 @@ ggplot(data = grf, aes(x = GenLenMinus, y = distg1In0In1Out))+
 
 #####Start read KnKs
 
-KnKs = read.table('../../mtdna-mammalian-evolution/Body/1Raw/RRT/cytb.threesomes.neighbours5.RRT.txt', header = FALSE, skip = 3)
+KnKs = read.table('../../Body/1Raw/RRT/cytb.threesomes.neighbours5.RRT.txt', header = FALSE, skip = 3)
 names(KnKs) = c('Family','Ingroup1','Ingroup2','Outgroup','Gene','X1','X2','X3','X4','X5','X6','X7','X8',
                  'X9','X10','X11','X12','X13','X14','X15','X16','X17','X18','X19','X20')
 
