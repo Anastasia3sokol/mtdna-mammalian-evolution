@@ -99,7 +99,8 @@ ggplot(data = grf, aes(x = GenLenMinus, y = distgallIn0In1Out))+
 
 ggplot(data = grf, aes(x = GenLenMinus, y = distg1In0In1Out))+
   geom_bin2d()+
-  geom_smooth(method=lm, se=TRUE, fullrange=FALSE, level=0.95, col='red')
+  scale_fill_gradient(low = 'darkgoldenrod1', high = 'red')+
+  geom_smooth(method=lm, se=TRUE, fullrange=FALSE, level=0.95, col='blue4')
 
 
 
@@ -116,7 +117,8 @@ grf$median = apply(as.matrix(grf$GenLenMinus),1,mmm)
 
 ggplot(data= grf, aes(x = GenLenMinus, y = distg1In0In1Out, group = median))+
   geom_boxplot(outlier.shape = NA)+
-  scale_y_continuous(limits = quantile(grf$distg1In0In1Out, c(0.1, 0.9)))
+  scale_y_continuous(limits = quantile(grf$distg1In0In1Out, c(0.1, 0.9)))+
+  labs(x = 'Contranst in Generation Length', y = 'Average Grantham')
 
 d = quantile(grf$GenLenMinus, names = FALSE)
 quant = function(x)
@@ -133,10 +135,12 @@ grf$quant = apply(as.matrix(grf$GenLenMinus),1,quant)
 
 ggplot(data= grf, aes(x = GenLenMinus, y = distg1In0In1Out, group = quant))+
   geom_boxplot(outlier.shape = NA)+
-  scale_y_continuous(limits = quantile(grf$distg1In0In1Out, c(0.1, 0.9)))
+  scale_y_continuous(limits = quantile(grf$distg1In0In1Out, c(0.1, 0.9)))+
+  labs(x = 'Contranst in Generation Length', y = 'Average Grantham')
 
 
-wilcox.test(grf$distg1In0In1Out~grf$median, paired = FALSE) ### p-value < 0.05
+aa = wilcox.test(grf$distg1In0In1Out~grf$median, paired = FALSE) ### p-value < 0.05
+as.numeric(aa$p.value)
 wilcox.test(grf$distgallIn0In1Out~grf$median, paired = FALSE)
 
 summary(aov(distgallIn0In1Out ~ quant, data = grf))
@@ -175,6 +179,17 @@ colnames(FinalKnKs)[colnames(FinalKnKs) == 'GenerationLength_d'] <- 'GenLenIn1'
 FinalKnKs$GenLenIn0MinusIn1 = FinalKnKs$GenLenIn0-FinalKnKs$GenLenIn1
 summary(FinalKnKs$GenLenIn0MinusIn1)
 
+FinalKnKs$KnKs = as.numeric(FinalKnKs$NonsNondegIn1MinusIn2)
+FinalKnKs$KnKs = as.numeric(FinalKnKs$Syn4FDegenIn1MinusIn2)
+
+FinalKnKs = FinalKnKs[FinalKnKs$NonsNondegIn1MinusIn2 != 0,]
+FinalKnKs = FinalKnKs[FinalKnKs$Syn4FDegenIn1MinusIn2 != 0,]
+
+FinalKnKs$KnKs = FinalKnKs$NonsNondegIn1MinusIn2/FinalKnKs$Syn4FDegenIn1MinusIn2
+
+FinalKnKs <- FinalKnKs[!is.infinite(FinalKnKs$KnKs),]
+
+
 #### CONTROL CHECK
 
 lillie.test(FinalKnKs$NonsNondegIn1MinusIn2)
@@ -191,7 +206,6 @@ cor.test(FinalKnKs$GenLenIn0MinusIn1,FinalKnKs$Syn2FDegenIn1MinusIn2, method = '
 plot(FinalKnKs$GenLenIn0MinusIn1,FinalKnKs$Syn4FDegenIn1MinusIn2)
 
 
-
 ggplot(data = FinalKnKs, aes(x = GenLenIn0MinusIn1, y = NonsNondegIn1MinusIn2))+
   geom_bin2d()+
   geom_smooth(method = lm)
@@ -200,8 +214,11 @@ ggplot(data = FinalKnKs, aes(x = GenLenIn0MinusIn1, y = Syn4FDegenIn1MinusIn2))+
   geom_bin2d()+
   geom_smooth(method = lm)
 
-
-
+ggplot(data= FinalKnKs, aes(x = GenLenIn0MinusIn1, y = KnKs))+
+  geom_bin2d()+
+  scale_fill_gradient(low = "yellow", high = "red")+
+  labs(x = 'Contranst in Generation Length', y = 'Kn/Ks')+
+  geom_smooth(method = lm, col = 'blue')
 
 ##### TO DO ###
 # 1. Ask Konstantin to calculate diff in KnKs Between In0-Out and In1-Out, in older table we saw just difference between Ingroups
