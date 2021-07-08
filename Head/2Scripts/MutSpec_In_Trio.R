@@ -2,7 +2,7 @@ rm(list=ls(all=TRUE))
 
 library(seqinr)
 
-subs = read.table('C:/Users/MitoClubHouse/Documents/data/DIliushchenko/SubBtwTrio_d5.txt', header = T, skip = 1)
+subs = read.table('../../Body/2Derived/SubBtwTrio_d5.txt', header = T, skip = 1)
 
 subs = subs[,-1]
 
