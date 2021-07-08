@@ -3,7 +3,7 @@ rm(list=ls(all=TRUE))
 library(seqinr)
 library(dplyr)
 
-mut = read.csv('4Fold_MutSpec_Trio.csv')
+mut = read.csv('../../Body/2Derived/4Fold_MutSpec_Trio.csv')
 
 mut = mut[,c(2,3,4,5,1,6)]
 
@@ -23,4 +23,4 @@ names(In0In1) = c('Species1','Species2','Family','Substitution','Rel_Of_Subs')
 
 final_mut = rbind(In0In1,In0Out,In1Out)
 
-write.table(final_mut,'Mut_Spec_4Fold_Without_Normalization.txt')
+write.table(final_mut,'../../Body/3Result/Mut_Spec_4Fold_Without_Normalization.txt')
