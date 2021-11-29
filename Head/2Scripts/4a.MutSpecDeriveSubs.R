@@ -124,4 +124,4 @@ trios_seq$SeqIn1 <- NULL
 trios_seq$SeqOut <- NULL
 
 #### save table
-write.csv(trios_seq,file = '../../Mut_Spec_4Fold.csv')
+write.csv(trios_seq,file = '../../MutSpec.DerivedSubs.csv')
